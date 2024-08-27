@@ -68,6 +68,8 @@ export default function MapCard(props) {
             </Container>
             <CardLink
                href={`https://osu.ppy.sh/beatmapsets/${props.beatmap.setid}#osu/${props.beatmap.id}`}
+               target="_blank"
+               rel="noopener noreferrer"
             >
                Beatmap
             </CardLink>

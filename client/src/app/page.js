@@ -1,12 +1,12 @@
-import Link from "next/link";
-import Button from "react-bootstrap/Button";
+import { auth } from "@/auth";
 
-export default function Home() {
+export default async function Home() {
+   const session = await auth();
+
    return (
       <main>
-         <Link href="/mappool">
-            <Button>Select Pool</Button>
-         </Link>
+         <h1>Home page content</h1>
+         {session && <pre>{JSON.stringify(session, null, 2)}</pre>}
       </main>
    );
 }

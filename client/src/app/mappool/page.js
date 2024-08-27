@@ -1,19 +1,13 @@
-"use client";
-
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import ModPool from "./modpool";
-import { PlusCircle } from "react-bootstrap-icons";
-import {
-   autoUpdate,
-   offset,
-   useClick,
-   useDismiss,
-   useFloating,
-   useInteractions
-} from "@floating-ui/react";
-import { useState } from "react";
+import AddMapButton from "./addmap";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function Mappool() {
+export default async function Mappool() {
+   const session = await auth();
+   if (!session) return redirect("/");
+
    const maps = [
       {
          id: 1781960,
@@ -76,18 +70,6 @@ export default function Mappool() {
          stars: 5.32
       }
    ];
-   const [isOpen, setIsOpen] = useState(true);
-   const { refs, floatingStyles, context } = useFloating({
-      placement: "left-end",
-      strategy: "fixed",
-      whileElementsMounted: autoUpdate,
-      middleware: [offset(5)],
-      open: isOpen,
-      onOpenChange: setIsOpen
-   });
-   const click = useClick(context);
-   const dismiss = useDismiss(context);
-   const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss]);
    return (
       <Container className="py-2">
          <div className="d-flex flex-column gap-4">
@@ -95,35 +77,7 @@ export default function Mappool() {
             <ModPool mod="Hidden" maps={maps.slice(0, 3)} />
             <ModPool mod="Hard Rock" maps={maps.slice(1, 3)} />
          </div>
-         <Button
-            ref={refs.setReference}
-            {...getReferenceProps()}
-            className="position-fixed bottom-0 end-0 m-4 rounded-circle p-2"
-         >
-            <PlusCircle size={32} />
-         </Button>
-         {isOpen && (
-            <div
-               ref={refs.setFloating}
-               style={floatingStyles}
-               className="border rounded p-1 bg-body d-flex flex-column gap-1"
-               {...getFloatingProps()}
-            >
-               <Row>
-                  <Col>Beatmap Link:</Col>
-                  <Col>
-                     <input />
-                  </Col>
-               </Row>
-               <Row>
-                  <Col>Mod:</Col>
-                  <Col>
-                     <input />
-                  </Col>
-               </Row>
-               <Button>Add</Button>
-            </div>
-         )}
+         <AddMapButton />
       </Container>
    );
 }
