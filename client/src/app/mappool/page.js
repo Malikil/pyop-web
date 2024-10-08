@@ -3,12 +3,16 @@ import ModPool from "./modpool";
 import AddMapButton from "./addmap";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { getPlayer } from "@/fetchplayer";
+import { ModsEnum } from "osu-web.js";
 
 export default async function Mappool() {
    const session = await auth();
    if (!session) return redirect("/");
 
-   const maps = [
+   const player = await getPlayer(session.user.name);
+   const maps = player.maps.current;
+   /*[
       {
          id: 1781960,
          setid: 852544,
@@ -69,15 +73,20 @@ export default async function Mappool() {
          ar: 9,
          stars: 5.32
       }
-   ];
+   ]; //*/
    return (
       <Container className="py-2">
          <div className="d-flex flex-column gap-4">
-            <ModPool mod="NoMod" maps={maps} />
-            <ModPool mod="Hidden" maps={maps.slice(0, 3)} />
-            <ModPool mod="Hard Rock" maps={maps.slice(1, 3)} />
+            <ModPool mod="NoMod" maps={maps.filter(m => !m.mods)} minCount={2} />
+            <ModPool mod="Hidden" maps={maps.filter(m => m.mods === ModsEnum.HD)} minCount={2} />
+            <ModPool mod="Hard Rock" maps={maps.filter(m => m.mods === ModsEnum.HR)} minCount={2} />
+            <ModPool
+               mod="Double Time"
+               maps={maps.filter(m => m.mods === ModsEnum.DT)}
+               minCount={2}
+            />
          </div>
-         <AddMapButton />
+         <AddMapButton count={maps.length} />
       </Container>
    );
 }

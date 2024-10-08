@@ -37,7 +37,7 @@ export default function MapCard(props) {
                alt="Cover"
                style={{ minHeight: "100px", objectFit: "cover" }}
             />
-            <CardTitle>
+            <CardTitle className="mt-1">
                {props.beatmap.artist} - {props.beatmap.title}
             </CardTitle>
             <CardSubtitle>{props.beatmap.version}</CardSubtitle>
