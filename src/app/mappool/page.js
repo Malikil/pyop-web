@@ -1,16 +1,21 @@
-import { Container } from "react-bootstrap";
+"use client";
+
+import { Container, Spinner } from "react-bootstrap";
 import ModPool from "./modpool";
 import AddMapButton from "./addmap";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import { getPlayer } from "@/fetchplayer";
 import { ModsEnum } from "osu-web.js";
+import usePlayer from "@/hooks/usePlayer";
+import { useRouter } from "next/navigation";
 
-export default async function Mappool() {
-   const session = await auth();
-   if (!session) return redirect("/");
+export default function Mappool() {
+   const { data: player, isLoading, isError } = usePlayer();
+   if (isLoading) return <Spinner />;
+   if (isError) {
+      const router = useRouter();
+      router.push("/");
+   }
 
-   const player = await getPlayer(session.user.name);
+   console.log(player);
    const maps = player.maps.current;
    return (
       <Container className="py-2">
@@ -24,7 +29,7 @@ export default async function Mappool() {
                minCount={2}
             />
          </div>
-         <AddMapButton count={maps.length} token={session.accessToken} />
+         <AddMapButton count={maps.length} />
       </Container>
    );
 }

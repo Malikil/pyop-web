@@ -11,12 +11,11 @@ import {
    useInteractions
 } from "@floating-ui/react";
 import { useState } from "react";
-import { Client, ModsEnum } from "osu-web.js";
+import { ModsEnum } from "osu-web.js";
+import { useSWRConfig } from "swr";
 
-export default function AddMapButton({ count, token }) {
-   // Create the osu client
-   const osuClient = new Client(token);
-
+export default function AddMapButton({ count }) {
+   const { mutate } = useSWRConfig();
    // Handle add button popup box
    const [isOpen, setIsOpen] = useState(false);
    const { refs, floatingStyles, context } = useFloating({
@@ -125,7 +124,43 @@ export default function AddMapButton({ count, token }) {
                </Row>
                <Button
                   onClick={async () => {
-                     console.log(token);
+                     const debugMapData = {
+                        id: 1781960,
+                        setid: 852544,
+                        artist: "米津玄師",
+                        title: "LOSER",
+                        version: "WINNER",
+                        length: 240,
+                        bpm: 121,
+                        cs: 4.1,
+                        ar: 9.3,
+                        stars: 5.47,
+                        mods: 8
+                     };
+                     // Get map data
+                     // Send the data to the server
+                     // (Maybe the server will fetch and just respond with the map data idk)
+
+                     // Update the list locally
+                     console.log({ mapLink, mods });
+                     mutate(
+                        "/api/db/player",
+                        () =>
+                           fetch("/api/db/maps", {
+                              method: "POST",
+                              body: JSON.stringify(debugMapData)
+                           }),
+                        {
+                           populateCache: (result, player) => ({
+                              ...player,
+                              maps: {
+                                 ...player.maps,
+                                 current: player.maps.current.concat(debugMapData)
+                              }
+                           }),
+                           revalidate: false
+                        }
+                     );
                   }}
                >
                   Add

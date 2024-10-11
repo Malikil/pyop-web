@@ -10,6 +10,7 @@
  * @prop {number} cs
  * @prop {number} ar
  * @prop {number} stars
+ * @prop {number} mods
  */
 
 import {
@@ -23,12 +24,14 @@ import {
    Container,
    Row
 } from "react-bootstrap";
+import { useSWRConfig } from "swr";
 
 /**
  * @param {object} props
  * @param {Beatmap} props.beatmap
  */
 export default function MapCard(props) {
+   const { mutate } = useSWRConfig();
    return (
       <Card>
          <CardBody>
@@ -73,7 +76,30 @@ export default function MapCard(props) {
             >
                Beatmap
             </CardLink>
-            <CardLink>Remove</CardLink>
+            <CardLink
+               role="button"
+               onClick={() => mutate(
+                  '/api/db/player',
+                  () => fetch(`/api/db/maps?id=${props.beatmap.id}&mods=${props.beatmap.mods}`, { method: 'DELETE' }).then(res => res.json()),
+                  {
+                     optimisticData: (player) => ({
+                        ...player,
+                        maps: {
+                           ...player.maps,
+                           current: player.maps.current.filter(m => m.id !== props.beatmap.id || m.mods !== props.beatmap.mods)
+                        }
+                     }),
+                     populateCache: (result, player) => ({
+                        ...player,
+                        maps: {
+                           ...player.maps,
+                           current: result
+                        }
+                     }),
+                     revalidate: false
+                  }
+               )}
+            >Remove</CardLink>
          </CardBody>
       </Card>
    );
