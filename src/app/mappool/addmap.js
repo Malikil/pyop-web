@@ -11,9 +11,12 @@ import {
    useInteractions
 } from "@floating-ui/react";
 import { useState } from "react";
-import { ModsEnum } from "osu-web.js";
+import { Client, ModsEnum } from "osu-web.js";
 
-export default function AddMapButton({ count }) {
+export default function AddMapButton({ count, token }) {
+   // Create the osu client
+   const osuClient = new Client(token);
+
    // Handle add button popup box
    const [isOpen, setIsOpen] = useState(false);
    const { refs, floatingStyles, context } = useFloating({
@@ -28,7 +31,8 @@ export default function AddMapButton({ count }) {
    const dismiss = useDismiss(context);
    const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss]);
 
-   // Handle mod selection
+   // Handle form data
+   const [mapLink, setMapLink] = useState("");
    const [mods, setMods] = useState(0);
 
    return (
@@ -47,7 +51,7 @@ export default function AddMapButton({ count }) {
                <Row>
                   <Col>Beatmap Link:</Col>
                   <Col>
-                     <input />
+                     <input value={mapLink} onChange={e => setMapLink(e.target.value)} />
                   </Col>
                </Row>
                <Row>
@@ -119,7 +123,13 @@ export default function AddMapButton({ count }) {
                      </ButtonGroup>
                   </Col>
                </Row>
-               <Button>Add</Button>
+               <Button
+                  onClick={async () => {
+                     console.log(token);
+                  }}
+               >
+                  Add
+               </Button>
             </div>
          )}
       </div>
