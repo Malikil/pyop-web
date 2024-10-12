@@ -10,8 +10,8 @@ export default function MatchProcedure() {
                everyone is ready.
             </li>
             <li>
-               If a player isn't in the lobby by 10 minutes past match time, they forfeit the match
-               automatically.
+               If a player isn&apos;t in the lobby by 10 minutes past match time, they forfeit the
+               match automatically.
             </li>
             <li>
                Once all players are in the lobby, each player may select 1 warmup map of less than 4
@@ -22,7 +22,7 @@ export default function MatchProcedure() {
                second pick
             </li>
             <li>NF and ScoreV2 will be used on all maps.</li>
-            <li>Players pick maps from their opponent's pool</li>
+            <li>Players pick maps from their opponent&apos;s pool</li>
             <ul>
                <li>
                   If the same map is in both pools, then either player may pick the map. But is may
@@ -39,7 +39,7 @@ export default function MatchProcedure() {
                If both players are tied with one map left to play a tiebreaker map will be played
             </li>
             <ul>
-               <li>I'll come up with tiebreaker stuff later</li>
+               <li>I&apos;ll come up with tiebreaker stuff later</li>
             </ul>
          </ul>
       </div>

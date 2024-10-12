@@ -7,7 +7,12 @@ export default async function Home() {
          <h1>Pick Your Own Pool Tournament</h1>
          <InfoAndRules />
          <MatchProcedure />
-         <img src="/bracket_preview.svg" width="100%" height="auto" />
+         <img
+            src="/bracket_preview.svg"
+            alt="Double Elimination Bracket Preview"
+            width="100%"
+            height="auto"
+         />
       </main>
    );
 }

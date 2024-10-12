@@ -9,7 +9,7 @@ export default function MappoolMaps() {
             <li>Custtom Mod allows you to pick which mods will be used for that map</li>
             <ul>
                <li>Mods can be any combination of: NoMod, HD, HR, DT, EZ, or HT</li>
-               <li>The two maps don't need to use the same mods</li>
+               <li>The two maps don&apos;t need to use the same mods</li>
             </ul>
             <li>Maps must be within a certain star range each week:</li>
             <ol>
@@ -21,7 +21,7 @@ export default function MappoolMaps() {
             </ol>
             <ul>
                <li>Play-in matches will use the same star ranges as week 1</li>
-               <li>Maps don't need to be changed during play-in</li>
+               <li>Maps don&apos;t need to be changed during play-in</li>
             </ul>
             <li>
                Each map should be more than 1:00 and less than 5:15 <strong>drain time</strong>
@@ -45,7 +45,7 @@ export default function MappoolMaps() {
                <li>Do not use NF for the pass screenshot</li>
                <li>ScoreV2 is optional for pass screenshots</li>
             </ul>
-            <li>Unranked maps are allowed, as long as they're not too unreasonable</li>
+            <li>Unranked maps are allowed, as long as they&apos;re not too unreasonable</li>
             <ul>
                <li>
                   This includes things like 2B, notes outside the playfield, the whole map not just
@@ -67,7 +67,7 @@ export default function MappoolMaps() {
             <li>Maps requiring the use of special skins or storyboard will be rejected</li>
             <li>
                <strong style={{ fontSize: "130%" }}>
-                  Tournament staff may reject maps for any other reason if they feel it's not
+                  Tournament staff may reject maps for any other reason if they feel it&apos;s not
                   appropriate for the tournament
                </strong>
             </li>

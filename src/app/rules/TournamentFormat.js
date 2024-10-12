@@ -22,11 +22,11 @@ export default function TournamentFormat() {
             <li>
                Players select their pool each week. See <a href="#mappools">Mappools</a>
             </li>
-            <li>Pick maps from opponent's pool in matches</li>
+            <li>Pick maps from opponent&apos;s pool in matches</li>
             <li>No bans</li>
             <li>
-               If the same map is in both players' pools, either player may pick the map, but it may
-               only be picked once in the match.
+               If the same map is in both players&apos; pools, either player may pick the map, but
+               it may only be picked once in the match.
             </li>
             <ul>
                <li>
