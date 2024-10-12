@@ -6,12 +6,13 @@ import AddMapButton from "./addmap";
 import { ModsEnum } from "osu-web.js";
 import usePlayer from "@/hooks/usePlayer";
 import { useRouter } from "next/navigation";
+import PoolStats from "./PoolStats";
 
 export default function Mappool() {
    const { data: player, isLoading, isError } = usePlayer();
-      const router = useRouter();
-      if (isLoading) return <Spinner />;
-      if (isError) router.push("/");
+   const router = useRouter();
+   if (isLoading) return <Spinner className="m-4" />;
+   if (isError) router.push("/");
 
    console.log(player);
    const maps = player.maps.current;
@@ -27,6 +28,7 @@ export default function Mappool() {
                minCount={2}
             />
          </div>
+         <PoolStats maps={maps} />
          <AddMapButton count={maps.length} />
       </Container>
    );

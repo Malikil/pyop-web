@@ -6,7 +6,7 @@ export default function MappoolMaps() {
          <h4>Maps</h4>
          <ul>
             <li>2 maps each of NoMod, HD, HR, DT, and Custom Mod (total 10 maps)</li>
-            <li>Custtom Mod allows you to pick which mods will be used for that map</li>
+            <li>Custom Mod allows you to pick which mods will be used for that map</li>
             <ul>
                <li>Mods can be any combination of: NoMod, HD, HR, DT, EZ, or HT</li>
                <li>The two maps don&apos;t need to use the same mods</li>

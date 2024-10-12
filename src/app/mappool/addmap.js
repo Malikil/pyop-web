@@ -35,7 +35,7 @@ export default function AddMapButton({ count }) {
    const [mods, setMods] = useState(0);
 
    return (
-      <div className="position-fixed bottom-0 end-0 m-4 rounded-circle p-2">
+      <div className="position-fixed bottom-0 end-0 m-3 rounded-circle p-2">
          <div className="text-center">{count || 0} / 10</div>
          <Button ref={refs.setReference} {...getReferenceProps()}>
             <PlusCircle size={32} />
