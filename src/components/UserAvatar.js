@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import Image from "next/image";
 
 export default async function UserAvatar({ fallback }) {
    const session = await auth();
@@ -7,7 +8,13 @@ export default async function UserAvatar({ fallback }) {
 
    return (
       <div>
-         <img src={session.user.image} alt="User Avatar" width={64} className="rounded-circle" />
+         <Image
+            src={session.user.image}
+            alt="User Avatar"
+            width={64}
+            height={64}
+            className="rounded-circle"
+         />
       </div>
    );
 }

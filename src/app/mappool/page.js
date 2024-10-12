@@ -9,11 +9,9 @@ import { useRouter } from "next/navigation";
 
 export default function Mappool() {
    const { data: player, isLoading, isError } = usePlayer();
-   if (isLoading) return <Spinner />;
-   if (isError) {
       const router = useRouter();
-      router.push("/");
-   }
+      if (isLoading) return <Spinner />;
+      if (isError) router.push("/");
 
    console.log(player);
    const maps = player.maps.current;
