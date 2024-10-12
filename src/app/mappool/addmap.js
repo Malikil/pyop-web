@@ -10,7 +10,7 @@ import {
    useFloating,
    useInteractions
 } from "@floating-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModsEnum } from "osu-web.js";
 import { useSWRConfig } from "swr";
 
@@ -33,11 +33,14 @@ export default function AddMapButton({ count }) {
    // Handle form data
    const [mapLink, setMapLink] = useState("");
    const [mods, setMods] = useState(0);
+   useEffect(() => {
+      if (count >= 10) setIsOpen(false);
+   }, [count]);
 
    return (
       <div className="position-fixed bottom-0 end-0 m-3 rounded-circle p-2">
          <div className="text-center">{count || 0} / 10</div>
-         <Button ref={refs.setReference} {...getReferenceProps()}>
+         <Button ref={refs.setReference} {...getReferenceProps()} disabled={count >= 10}>
             <PlusCircle size={32} />
          </Button>
          {isOpen && (
