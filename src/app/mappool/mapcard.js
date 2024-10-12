@@ -43,7 +43,7 @@ export default function MapCard(props) {
             <CardTitle className="mt-1">
                {props.beatmap.artist} - {props.beatmap.title}
             </CardTitle>
-            <CardSubtitle className="d-flex justify-content-between">
+            <CardSubtitle className="d-flex">
                <div>{props.beatmap.version}</div>
                <div className="ml-auto">{props.beatmap.id}</div>
             </CardSubtitle>
