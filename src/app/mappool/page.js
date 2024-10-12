@@ -12,7 +12,7 @@ export default function Mappool() {
    const { data: player, isLoading, isError } = usePlayer();
    const router = useRouter();
    if (isLoading) return <Spinner className="m-4" />;
-   if (isError) router.push("/");
+   if (isError || !player) return router.push("/");
 
    console.log(player);
    const maps = player.maps.current;
