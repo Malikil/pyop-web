@@ -127,40 +127,28 @@ export default function AddMapButton({ count }) {
                </Row>
                <Button
                   onClick={async () => {
-                     const debugMapData = {
-                        id: 1781960,
-                        setid: 852544,
-                        artist: "米津玄師",
-                        title: "LOSER",
-                        version: "WINNER",
-                        length: 240,
-                        bpm: 121,
-                        cs: 4.1,
-                        ar: 9.3,
-                        stars: 5.47,
-                        mods: 8
-                     };
-                     // Get map data
-                     // Send the data to the server
-                     // (Maybe the server will fetch and just respond with the map data idk)
-
                      // Update the list locally
                      console.log({ mapLink, mods });
+                     const mapid = parseInt(mapLink.slice(mapLink.lastIndexOf("/") + 1));
+                     if (isNaN(mapid)) return;
                      mutate(
                         "/api/db/player",
                         () =>
                            fetch("/api/db/maps", {
                               method: "POST",
-                              body: JSON.stringify(debugMapData)
-                           }),
+                              body: JSON.stringify({ mapid, mods })
+                           }).then(res => res.json()),
                         {
-                           populateCache: (result, player) => ({
-                              ...player,
-                              maps: {
-                                 ...player.maps,
-                                 current: player.maps.current.concat(debugMapData)
-                              }
-                           }),
+                           populateCache: (result, player) => {
+                              if (!result) return player;
+                              return {
+                                 ...player,
+                                 maps: {
+                                    ...player.maps,
+                                    current: player.maps.current.concat(result)
+                                 }
+                              };
+                           },
                            revalidate: false
                         }
                      );

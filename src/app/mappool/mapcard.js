@@ -43,7 +43,10 @@ export default function MapCard(props) {
             <CardTitle className="mt-1">
                {props.beatmap.artist} - {props.beatmap.title}
             </CardTitle>
-            <CardSubtitle>{props.beatmap.version}</CardSubtitle>
+            <CardSubtitle className="d-flex justify-content-between">
+               <div>{props.beatmap.version}</div>
+               <div className="ml-auto">{props.beatmap.id}</div>
+            </CardSubtitle>
             <Container className="mb-auto">
                <Row>
                   <Col>Length</Col>
@@ -78,28 +81,37 @@ export default function MapCard(props) {
             </CardLink>
             <CardLink
                role="button"
-               onClick={() => mutate(
-                  '/api/db/player',
-                  () => fetch(`/api/db/maps?id=${props.beatmap.id}&mods=${props.beatmap.mods}`, { method: 'DELETE' }).then(res => res.json()),
-                  {
-                     optimisticData: (player) => ({
-                        ...player,
-                        maps: {
-                           ...player.maps,
-                           current: player.maps.current.filter(m => m.id !== props.beatmap.id || m.mods !== props.beatmap.mods)
-                        }
-                     }),
-                     populateCache: (result, player) => ({
-                        ...player,
-                        maps: {
-                           ...player.maps,
-                           current: result
-                        }
-                     }),
-                     revalidate: false
-                  }
-               )}
-            >Remove</CardLink>
+               onClick={() =>
+                  mutate(
+                     "/api/db/player",
+                     () =>
+                        fetch(`/api/db/maps?id=${props.beatmap.id}&mods=${props.beatmap.mods}`, {
+                           method: "DELETE"
+                        }).then(res => res.json()),
+                     {
+                        optimisticData: player => ({
+                           ...player,
+                           maps: {
+                              ...player.maps,
+                              current: player.maps.current.filter(
+                                 m => m.id !== props.beatmap.id || m.mods !== props.beatmap.mods
+                              )
+                           }
+                        }),
+                        populateCache: (result, player) => ({
+                           ...player,
+                           maps: {
+                              ...player.maps,
+                              current: result
+                           }
+                        }),
+                        revalidate: false
+                     }
+                  )
+               }
+            >
+               Remove
+            </CardLink>
          </CardBody>
       </Card>
    );
