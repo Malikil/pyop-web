@@ -22,25 +22,27 @@ export default function MatchProcedure() {
                second pick
             </li>
             <li>NF and ScoreV2 will be used on all maps.</li>
-            <li>Players pick maps from their opponent&apos;s pool</li>
-            <ul>
-               <li>
-                  If the same map is in both pools, then either player may pick the map. But is may
-                  only be picked once during the match.
-               </li>
-               <li>
-                  If different difficulties of the same mapset are in each pool, they are treated as
-                  different maps.
-               </li>
-            </ul>
+            <li>
+               Players pick maps from their opponent&apos;s pool
+               <ul>
+                  <li>
+                     If the same map is in both pools, then either player may pick the map. But is
+                     may only be picked once during the match.
+                  </li>
+                  <li>
+                     If different difficulties of the same mapset are in each pool, they are treated
+                     as different maps.
+                  </li>
+               </ul>
+            </li>
             <li>Players alternate picking maps</li>
             <li>Matches are BO{rulesConfig.bestOf.join("/")}</li>
             <li>
                If both players are tied with one map left to play a tiebreaker map will be played
+               <ul>
+                  <li>I&apos;ll come up with tiebreaker stuff later</li>
+               </ul>
             </li>
-            <ul>
-               <li>I&apos;ll come up with tiebreaker stuff later</li>
-            </ul>
          </ul>
       </div>
    );

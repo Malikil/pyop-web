@@ -5,14 +5,16 @@ export default function TournamentFormat() {
       <div>
          <h3>Tournament Format</h3>
          <ul>
-            <li>1v1, ScoreV2, Double Elimination bracket</li>
-            <ul>
-               <li>
-                  If there are more than 32 players, single elimination seeded play-in matches will
-                  be used to determine which 32 players will play in the main bracket.
-               </li>
-               <li>Players are seeded based on global rank.</li>
-            </ul>
+            <li>
+               1v1, ScoreV2, Double Elimination bracket
+               <ul>
+                  <li>
+                     If there are more than 32 players, single elimination seeded play-in matches
+                     will be used to determine which 32 players will play in the main bracket.
+                  </li>
+                  <li>Players are seeded based on global rank.</li>
+               </ul>
+            </li>
             <li>
                Any single elimination matches will be BO7. Double elim stage will be BO
                {rulesConfig.bestOf.join("/")}
@@ -27,14 +29,14 @@ export default function TournamentFormat() {
             <li>
                If the same map is in both players&apos; pools, either player may pick the map, but
                it may only be picked once in the match.
+               <ul>
+                  <li>
+                     If the mods are different in each pool, the used mod will depend on who picked
+                     the map. The map can still only get picked once
+                  </li>
+                  <li>Different difficulties of the same mapset are treated as different maps.</li>
+               </ul>
             </li>
-            <ul>
-               <li>
-                  If the mods are different in each pool, the used mod will depend on who picked the
-                  map. The map can still only get picked once
-               </li>
-               <li>Different difficulties of the same mapset are treated as different maps.</li>
-            </ul>
             <li>All times are in UTC</li>
          </ul>
       </div>
