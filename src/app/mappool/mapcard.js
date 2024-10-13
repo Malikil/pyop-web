@@ -14,6 +14,7 @@
  * @prop {number} mods
  */
 
+import useSubmissionRequirements from "@/hooks/useSubmissionRequirements";
 import { convertTime } from "@/time";
 import {
    Card,
@@ -27,6 +28,9 @@ import {
    Row
 } from "react-bootstrap";
 import { useSWRConfig } from "swr";
+import styles from "./mappool.module.css";
+import { useEffect, useState } from "react";
+import { ExclamationCircle } from "react-bootstrap-icons";
 
 /**
  * @param {object} props
@@ -34,8 +38,58 @@ import { useSWRConfig } from "swr";
  */
 export default function MapCard(props) {
    const { mutate } = useSWRConfig();
+   const { data: reqs, isLoading } = useSubmissionRequirements();
+   // Check map status
+   const [errorState, setErrorState] = useState({
+      drain: false,
+      length: false,
+      stars: false,
+      style: null,
+      textStyle: null
+   });
+   useEffect(() => {
+      if (isLoading) return;
+
+      setErrorState(oldState => {
+         let err = false;
+         let warn = false;
+         if (
+            props.beatmap.drain < reqs.maps.drain.min - 10 ||
+            props.beatmap.drain > reqs.maps.drain.max + 10
+         ) {
+            oldState.drain = true;
+            err = true;
+         } else if (
+            props.beatmap.drain < reqs.maps.drain.min ||
+            props.beatmap.drain > reqs.maps.drain.max
+         ) {
+            oldState.drain = true;
+            warn = true;
+         } else oldState.drain = false;
+
+         if (props.beatmap.length > reqs.maps.length.max) {
+            oldState.length = true;
+            err = true;
+         } else oldState.length = false;
+
+         if (
+            props.beatmap.stars < reqs.maps.stars.min ||
+            props.beatmap.stars > reqs.maps.stars.max
+         ) {
+            oldState.stars = true;
+            err = true;
+         } else oldState.stars = false;
+
+         return {
+            ...oldState,
+            style: err ? styles.map_error : warn ? styles.map_warning : null,
+            textStyle: err ? "text-danger" : warn ? "text-warning" : null
+         };
+      });
+   }, [props.beatmap, reqs]);
+
    return (
-      <Card>
+      <Card className={errorState.style}>
          <CardBody>
             <CardImg
                src={`https://assets.ppy.sh/beatmaps/${props.beatmap.setid}/covers/cover.jpg`}
@@ -52,9 +106,15 @@ export default function MapCard(props) {
             <Container className="mb-auto">
                <Row>
                   <Col>Length</Col>
-                  <Col>
-                     {convertTime(props.beatmap.length)}
-                     {props.beatmap.drain < props.beatmap.length && ` (${convertTime(props.beatmap.drain)} drain)`}
+                  <Col className="d-flex align-items-center gap-1">
+                     {(errorState.length || errorState.drain) && (
+                        <ExclamationCircle className={errorState.textStyle} />
+                     )}{" "}
+                     <span className="d-inline-block">{convertTime(props.beatmap.length)}</span>{" "}
+                     <span className="d-inline-block">
+                        {props.beatmap.drain < props.beatmap.length &&
+                           ` (${convertTime(props.beatmap.drain)} drain)`}
+                     </span>
                   </Col>
                </Row>
                <Row>
@@ -63,7 +123,10 @@ export default function MapCard(props) {
                </Row>
                <Row>
                   <Col>Stars</Col>
-                  <Col>{props.beatmap.stars.toFixed(2)}</Col>
+                  <Col className="d-flex align-items-center gap-1">
+                     {errorState.stars && <ExclamationCircle className={errorState.textStyle} />}
+                     <div>{props.beatmap.stars.toFixed(2)}</div>
+                  </Col>
                </Row>
                <Row>
                   <Col>CS</Col>
@@ -92,16 +155,17 @@ export default function MapCard(props) {
                         }).then(res => res.json()),
                      {
                         optimisticData: player => {
-                           const index = player.maps.current.findIndex(m => m.id === props.beatmap.id && m.mods === props.beatmap.mods)
+                           const index = player.maps.current.findIndex(
+                              m => m.id === props.beatmap.id && m.mods === props.beatmap.mods
+                           );
                            return {
-                           ...player,
-                           maps: {
-                              ...player.maps,
-                              current: player.maps.current.filter(
-                                 (_, i) => i !== index
-                              )
-                           }
-                        }},
+                              ...player,
+                              maps: {
+                                 ...player.maps,
+                                 current: player.maps.current.filter((_, i) => i !== index)
+                              }
+                           };
+                        },
                         populateCache: (result, player) => ({
                            ...player,
                            maps: {

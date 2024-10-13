@@ -159,7 +159,7 @@ export default function AddMapButton({ count }) {
                      );
                   }}
                >
-                  Add {mapAdding && <Spinner size="16" />}
+                  Add {mapAdding && <Spinner size="sm" />}
                </Button>
             </div>
          )}

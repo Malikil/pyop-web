@@ -3,7 +3,7 @@
 import useSWR from "swr";
 import fetcher from "@/fetcher";
 
-const useMapRequirements = () => {
+const useSubmissionRequirements = () => {
    const { data, error, isLoading } = useSWR("/api/db/maps/requirements", fetcher);
 
    return {
@@ -12,4 +12,4 @@ const useMapRequirements = () => {
       isError: error
    };
 };
-export default useMapRequirements;
+export default useSubmissionRequirements;

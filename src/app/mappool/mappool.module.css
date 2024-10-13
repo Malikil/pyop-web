@@ -22,3 +22,14 @@
       display: none;
    }
 }
+.map_warning {
+   --bs-border-opacity: 1;
+   --bs-border-width: 4px;
+   border-color: rgba(var(--bs-warning-rgb), var(--bs-border-opacity));
+}
+
+.map_error {
+   --bs-border-opacity: 1;
+   --bs-border-width: 4px;
+   border-color: rgba(var(--bs-danger-rgb), var(--bs-border-opacity));
+}
