@@ -17,22 +17,27 @@ export const POST = async req => {
       const beatmap = await osuapi.beatmaps.getBeatmap(mapid);
       if (mods !== 0) {
          const attributes = await osuapi.beatmaps.getBeatmapAttributes(mapid, "osu", {
-            body: { mods }
+            body: { mods: (mods | ModsEnum.EZ) ^ ModsEnum.EZ }
          });
-         // Update the stats to the appropriate mod
-         // Attributes includes star rating and approach rate
+         // Get the map's star rating
          beatmap.difficulty_rating = attributes.star_rating;
-         beatmap.ar = attributes.approach_rate;
-         // CS needs to be calculated manually
-         // Only HR and EZ affect CS
-         if (mods & ModsEnum.HR) beatmap.cs = calcModStat.hr.cs(beatmap.cs);
-         else if (mods & ModsEnum.EZ) beatmap.cs = calcModStat.ez.cs(beatmap.cs);
+
+         // Do HR/EZ first because effective AR from DT/HT is applied after
+         if (mods & ModsEnum.HR) {
+            beatmap.ar = calcModStat.hr.ar(beatmap.ar);
+            beatmap.cs = calcModStat.hr.cs(beatmap.cs);
+         } else if (mods & ModsEnum.EZ) {
+            beatmap.ar = calcModStat.ez.ar(beatmap.ar);
+            beatmap.cs = calcModStat.ez.cs(beatmap.cs);
+         }
          // BPM/Length needs to be calculated for DT/EZ
          if (mods & ModsEnum.DT) {
+            beatmap.ar = calcModStat.dt.ar(beatmap.ar);
             beatmap.bpm = calcModStat.dt.bpm(beatmap.bpm);
             beatmap.total_length = calcModStat.dt.length(beatmap.total_length);
             beatmap.hit_length = calcModStat.dt.length(beatmap.hit_length);
-         } else if (mods & ModsEnum.EZ) {
+         } else if (mods & ModsEnum.HT) {
+            beatmap.ar = calcModStat.ht.ar(beatmap.ar);
             beatmap.bpm = calcModStat.ht.bpm(beatmap.bpm);
             beatmap.total_length = calcModStat.ht.length(beatmap.total_length);
             beatmap.hit_length = calcModStat.ht.length(beatmap.hit_length);

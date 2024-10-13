@@ -25,6 +25,7 @@ export default function MappoolMaps() {
                <ul>
                   <li>Play-in matches will use the same star ranges as week 1</li>
                   <li>Maps don&apos;t need to be changed during play-in</li>
+                  <li>EZ is ignored for star rating calculation</li>
                </ul>
             </li>
             <li>

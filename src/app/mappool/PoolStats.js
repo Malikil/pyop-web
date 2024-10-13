@@ -35,7 +35,7 @@ export default function PoolStats({ maps }) {
                   Total Time: 18:20 - 32:30 (
                   <span
                      className={
-                        (agg.drain < data.pool.drain.min || agg.drain > data.pool.drain.min
+                        (agg.drain < data.pool.drain.min || agg.drain > data.pool.drain.max
                            ? "text-danger"
                            : "text-success") + " fw-bold"
                      }

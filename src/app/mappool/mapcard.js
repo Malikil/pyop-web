@@ -31,10 +31,12 @@ import { useSWRConfig } from "swr";
 import styles from "./mappool.module.css";
 import { useEffect, useState } from "react";
 import { ExclamationCircle } from "react-bootstrap-icons";
+import { getEnumMods } from "osu-web.js";
 
 /**
  * @param {object} props
  * @param {Beatmap} props.beatmap
+ * @param {boolean} props.showMods
  */
 export default function MapCard(props) {
    const { mutate } = useSWRConfig();
@@ -101,7 +103,10 @@ export default function MapCard(props) {
             </CardTitle>
             <CardSubtitle className="d-flex">
                <div>{props.beatmap.version}</div>
-               <div className="ml-auto">{props.beatmap.id}</div>
+               {props.showMods && (
+                  <div className="ms-2">+{getEnumMods(props.beatmap.mods).join("")}</div>
+               )}
+               <div className="ms-auto">{props.beatmap.id}</div>
             </CardSubtitle>
             <Container className="mb-auto">
                <Row>
@@ -172,7 +177,8 @@ export default function MapCard(props) {
                               ...player.maps,
                               current: result
                            }
-                        })
+                        }),
+                        revalidate: true
                      }
                   )
                }

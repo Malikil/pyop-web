@@ -7,6 +7,7 @@ import { Card, CardBody, CardImg, CardTitle, Col, Row } from "react-bootstrap";
  * @param {string} props.mod
  * @param {import("./mapcard").Beatmap[]} props.maps
  * @param {number} [props.minCount]
+ * @param {boolean} props.showMods
  */
 export default function ModPool(props) {
    return (
@@ -14,7 +15,7 @@ export default function ModPool(props) {
          <h2>{props.mod}</h2>
          <div className="d-flex gap-2 flex-wrap flex-md-nowrap">
             {props.maps.map(m => (
-               <MapCard beatmap={m} key={m.id} />
+               <MapCard beatmap={m} key={m.id} showMods={props.showMods} />
             ))}
             {Array.from({ length: (props.minCount || 0) - props.maps.length }).map((_, i) => (
                <Card key={-i}>
