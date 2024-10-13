@@ -6,6 +6,7 @@
  * @prop {string} title
  * @prop {string} version
  * @prop {number} length
+ * @prop {number} drain
  * @prop {number} bpm
  * @prop {number} cs
  * @prop {number} ar
@@ -13,6 +14,7 @@
  * @prop {number} mods
  */
 
+import { convertTime } from "@/time";
 import {
    Card,
    CardBody,
@@ -51,13 +53,13 @@ export default function MapCard(props) {
                <Row>
                   <Col>Length</Col>
                   <Col>
-                     {Math.floor(props.beatmap.length / 60)}:
-                     {(props.beatmap.length % 60).toString().padStart(2, "0")}
+                     {convertTime(props.beatmap.length)}
+                     {props.beatmap.drain < props.beatmap.length && ` (${convertTime(props.beatmap.drain)} drain)`}
                   </Col>
                </Row>
                <Row>
                   <Col>BPM</Col>
-                  <Col>{props.beatmap.bpm}</Col>
+                  <Col>{parseFloat(props.beatmap.bpm.toFixed(3))}</Col>
                </Row>
                <Row>
                   <Col>Stars</Col>
@@ -69,7 +71,7 @@ export default function MapCard(props) {
                </Row>
                <Row>
                   <Col>AR</Col>
-                  <Col>{props.beatmap.ar}</Col>
+                  <Col>{parseFloat(props.beatmap.ar.toFixed(2))}</Col>
                </Row>
             </Container>
             <CardLink
@@ -89,23 +91,24 @@ export default function MapCard(props) {
                            method: "DELETE"
                         }).then(res => res.json()),
                      {
-                        optimisticData: player => ({
+                        optimisticData: player => {
+                           const index = player.maps.current.findIndex(m => m.id === props.beatmap.id && m.mods === props.beatmap.mods)
+                           return {
                            ...player,
                            maps: {
                               ...player.maps,
                               current: player.maps.current.filter(
-                                 m => m.id !== props.beatmap.id || m.mods !== props.beatmap.mods
+                                 (_, i) => i !== index
                               )
                            }
-                        }),
+                        }},
                         populateCache: (result, player) => ({
                            ...player,
                            maps: {
                               ...player.maps,
                               current: result
                            }
-                        }),
-                        revalidate: false
+                        })
                      }
                   )
                }

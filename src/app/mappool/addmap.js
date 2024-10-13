@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, ButtonGroup, Col, Row, ToggleButton } from "react-bootstrap";
+import { Button, ButtonGroup, Col, Row, Spinner, ToggleButton } from "react-bootstrap";
 import { PlusCircle } from "react-bootstrap-icons";
 import {
    autoUpdate,
@@ -36,6 +36,7 @@ export default function AddMapButton({ count }) {
    useEffect(() => {
       if (count >= 10) setIsOpen(false);
    }, [count]);
+   const [mapAdding, setMapAdding] = useState(false);
 
    return (
       <div className="position-fixed bottom-0 end-0 m-3 rounded-circle p-2">
@@ -133,13 +134,17 @@ export default function AddMapButton({ count }) {
                      if (isNaN(mapid)) return;
                      mutate(
                         "/api/db/player",
-                        () =>
-                           fetch("/api/db/maps", {
+                        async () => {
+                           setMapAdding(true);
+                           const res = await fetch("/api/db/maps", {
                               method: "POST",
                               body: JSON.stringify({ mapid, mods })
-                           }).then(res => res.json()),
+                           });
+                           return res.json();
+                        },
                         {
                            populateCache: (result, player) => {
+                              setMapAdding(false);
                               if (!result) return player;
                               return {
                                  ...player,
@@ -154,7 +159,7 @@ export default function AddMapButton({ count }) {
                      );
                   }}
                >
-                  Add
+                  Add {mapAdding && <Spinner size="16" />}
                </Button>
             </div>
          )}

@@ -6,13 +6,12 @@ export default function PoolStats({ maps }) {
    const { data, isLoading } = useMapRequirements();
    const agg = maps.reduce(
       (p, c) => ({
-         length: p.length + c.length,
+         drain: p.drain + c.drain,
          drainBuffer:
-            p.drainBuffer +
-            ((c.length < 60 && c.length >= 50) || (c.length > 315 && c.length <= 325))
+            p.drainBuffer + ((c.drain < 60 && c.drain >= 50) || (c.drain > 315 && c.drain <= 325))
       }),
       {
-         length: 0,
+         drain: 0,
          drainBuffer: 0
       }
    );
@@ -33,11 +32,11 @@ export default function PoolStats({ maps }) {
                   Total Time: 18:20 - 32:30 (
                   <span
                      className={
-                        (agg.length < 1100 || agg.length > 1950 ? "text-danger" : "text-success") +
+                        (agg.drain < 1100 || agg.drain > 1950 ? "text-danger" : "text-success") +
                         " fw-bold"
                      }
                   >
-                     {convertTime(agg.length)}
+                     {convertTime(agg.drain)}
                   </span>
                   )
                </div>

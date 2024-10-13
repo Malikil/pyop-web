@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { db } from "../connection";
+import db from "../connection";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
