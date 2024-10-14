@@ -29,11 +29,11 @@ export default function MappoolMaps() {
                </ul>
             </li>
             <li>
-               Each map should be more than 1:00 and less than 5:15 <strong>drain time</strong>
+               Each map should be more than 1:00 and less than 5:00 <strong>drain time</strong>
                <ul>
                   <li>Up to two maps may be above or below the drain limits by 10 seconds each.</li>
                   <li>
-                     <strong>Full length</strong> of a song must not be above 6:30
+                     <strong>Full length</strong> of a song must not be above 6:00
                   </li>
                   <li>Drain time includes DT/HT</li>
                </ul>

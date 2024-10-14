@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MoonStars, Sun } from "react-bootstrap-icons";
 
 export default function ThemeToggle() {
-   const [curTheme, setCurTheme] = useState(document.documentElement.getAttribute("data-bs-theme"));
+   const [curTheme, setCurTheme] = useState();
+   useEffect(() => setCurTheme(document.documentElement.getAttribute("data-bs-theme")), []);
 
    return (
       <div

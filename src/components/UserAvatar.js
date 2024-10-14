@@ -14,7 +14,7 @@ export default function UserAvatar({ src }) {
             data-bs-toggle="dropdown"
             aria-expanded="false"
          />
-         <div className="dropdown-menu">
+         <div className="dropdown-menu dropdown-menu-end">
             <form
                action={async () => {
                   "use server";
