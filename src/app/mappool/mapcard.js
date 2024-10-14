@@ -19,6 +19,7 @@ import { convertTime } from "@/time";
 import {
    Card,
    CardBody,
+   CardFooter,
    CardImg,
    CardLink,
    CardSubtitle,
@@ -60,12 +61,14 @@ export default function MapCard(props) {
             props.beatmap.drain > reqs.maps.drain.max + 10
          ) {
             oldState.drain = true;
+            oldState.textStyle = "text-danger";
             err = true;
          } else if (
             props.beatmap.drain < reqs.maps.drain.min ||
             props.beatmap.drain > reqs.maps.drain.max
          ) {
             oldState.drain = true;
+            oldState.textStyle = "text-warning";
             warn = true;
          } else oldState.drain = false;
 
@@ -84,15 +87,14 @@ export default function MapCard(props) {
 
          return {
             ...oldState,
-            style: err ? styles.map_error : warn ? styles.map_warning : null,
-            textStyle: err ? "text-danger" : warn ? "text-warning" : null
+            style: err ? styles.map_error : warn ? styles.map_warning : null
          };
       });
    }, [props.beatmap, reqs]);
 
    return (
       <Card className={errorState.style}>
-         <CardBody>
+         <CardBody className="d-flex flex-column">
             <CardImg
                src={`https://assets.ppy.sh/beatmaps/${props.beatmap.setid}/covers/cover.jpg`}
                alt="Cover"
@@ -108,7 +110,7 @@ export default function MapCard(props) {
                )}
                <div className="ms-auto">{props.beatmap.id}</div>
             </CardSubtitle>
-            <Container className="mb-auto">
+            <Container>
                <Row>
                   <Col>Length</Col>
                   <Col className="d-flex align-items-center gap-1">
@@ -129,7 +131,7 @@ export default function MapCard(props) {
                <Row>
                   <Col>Stars</Col>
                   <Col className="d-flex align-items-center gap-1">
-                     {errorState.stars && <ExclamationCircle className={errorState.textStyle} />}
+                     {errorState.stars && <ExclamationCircle className="text-danger" />}
                      <div>{props.beatmap.stars.toFixed(2)}</div>
                   </Col>
                </Row>
@@ -142,49 +144,51 @@ export default function MapCard(props) {
                   <Col>{parseFloat(props.beatmap.ar.toFixed(2))}</Col>
                </Row>
             </Container>
-            <CardLink
-               href={`https://osu.ppy.sh/beatmapsets/${props.beatmap.setid}#osu/${props.beatmap.id}`}
-               target="_blank"
-               rel="noopener noreferrer"
-            >
-               Beatmap
-            </CardLink>
-            <CardLink
-               role="button"
-               onClick={() =>
-                  mutate(
-                     "/api/db/player",
-                     () =>
-                        fetch(`/api/db/maps?id=${props.beatmap.id}&mods=${props.beatmap.mods}`, {
-                           method: "DELETE"
-                        }).then(res => res.json()),
-                     {
-                        optimisticData: player => {
-                           const index = player.maps.current.findIndex(
-                              m => m.id === props.beatmap.id && m.mods === props.beatmap.mods
-                           );
-                           return {
+            <div className="mt-auto">
+               <CardLink
+                  href={`https://osu.ppy.sh/beatmapsets/${props.beatmap.setid}#osu/${props.beatmap.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+               >
+                  Beatmap
+               </CardLink>
+               <CardLink
+                  role="button"
+                  onClick={() =>
+                     mutate(
+                        "/api/db/player",
+                        () =>
+                           fetch(`/api/db/maps?id=${props.beatmap.id}&mods=${props.beatmap.mods}`, {
+                              method: "DELETE"
+                           }).then(res => res.json()),
+                        {
+                           optimisticData: player => {
+                              const index = player.maps.current.findIndex(
+                                 m => m.id === props.beatmap.id && m.mods === props.beatmap.mods
+                              );
+                              return {
+                                 ...player,
+                                 maps: {
+                                    ...player.maps,
+                                    current: player.maps.current.filter((_, i) => i !== index)
+                                 }
+                              };
+                           },
+                           populateCache: (result, player) => ({
                               ...player,
                               maps: {
                                  ...player.maps,
-                                 current: player.maps.current.filter((_, i) => i !== index)
+                                 current: result
                               }
-                           };
-                        },
-                        populateCache: (result, player) => ({
-                           ...player,
-                           maps: {
-                              ...player.maps,
-                              current: result
-                           }
-                        }),
-                        revalidate: true
-                     }
-                  )
-               }
-            >
-               Remove
-            </CardLink>
+                           }),
+                           revalidate: true
+                        }
+                     )
+                  }
+               >
+                  Remove
+               </CardLink>
+            </div>
          </CardBody>
       </Card>
    );

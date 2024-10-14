@@ -41,7 +41,12 @@ export default function AddMapButton({ count }) {
    return (
       <div className="position-fixed bottom-0 end-0 m-3 rounded-circle p-2">
          <div className="text-center">{count || 0} / 10</div>
-         <Button ref={refs.setReference} {...getReferenceProps()} disabled={count >= 10}>
+         <Button
+            aria-label="Add Map"
+            ref={refs.setReference}
+            {...getReferenceProps()}
+            disabled={count >= 10}
+         >
             <PlusCircle size={32} />
          </Button>
          {isOpen && (

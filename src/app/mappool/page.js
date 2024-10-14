@@ -13,7 +13,6 @@ export default function Mappool() {
    const { data: player, isLoading, isError } = usePlayer();
    const router = useRouter();
 
-   console.log(player);
    const [maps, setMaps] = useState({
       nm: [],
       hd: [],
