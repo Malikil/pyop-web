@@ -1,4 +1,3 @@
-import ThemeToggle from "@/components/ThemeToggle";
 import InfoAndRules from "./rules/InfoAndRules";
 import MatchProcedure from "./rules/MatchProcedure";
 
@@ -14,7 +13,6 @@ export default async function Home() {
             width="100%"
             height="auto"
          />
-         <ThemeToggle />
       </main>
    );
 }

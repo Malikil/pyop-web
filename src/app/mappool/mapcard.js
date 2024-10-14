@@ -113,7 +113,7 @@ export default function MapCard(props) {
             <Container>
                <Row>
                   <Col>Length</Col>
-                  <Col className="d-flex align-items-center gap-1">
+                  <Col className="d-flex flex-wrap align-items-center gap-1">
                      {(errorState.length || errorState.drain) && (
                         <ExclamationCircle className={errorState.textStyle} />
                      )}{" "}

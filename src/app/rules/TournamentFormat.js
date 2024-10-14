@@ -38,6 +38,11 @@ export default function TournamentFormat() {
                </ul>
             </li>
             <li>All times are in UTC</li>
+            <li>
+               Joining the discord server is required. All communication and important information
+               will be announced there
+            </li>
+            <li>Register by posting to the #register channel in the discord server</li>
          </ul>
       </div>
    );

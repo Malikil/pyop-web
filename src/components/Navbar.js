@@ -1,15 +1,22 @@
 import SignIn from "@/components/SignIn";
+import Image from "next/image";
 import Link from "next/link";
-import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
+import NavbarItems from "./NavbarItems";
 
 export default function Navbar() {
    return (
-      <div className="sticky-top w-100 border-bottom bg-body">
-         <nav className="navbar navbar-expand-sm">
+      <div className="sticky-top w-100 border-bottom bg-body" tabIndex={-1}>
+         <nav className="navbar navbar-expand">
             <Container className="d-flex gap-2 align-items-center position-relative">
                <Link className="navbar-brand" href="/">
-                  <Button>Home</Button>
+                  <Image
+                     alt="Server Icon"
+                     src="/icon.webp"
+                     width={64}
+                     height={64}
+                     className="rounded-circle"
+                  />
                </Link>
                <button
                   className="navbar-toggler ms-auto"
@@ -23,18 +30,7 @@ export default function Navbar() {
                   <span className="navbar-toggler-icon" />
                </button>
                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul className="navbar-nav">
-                     <li className="nav-item">
-                        <Link className="nav-link" href="/register">
-                           Registration
-                        </Link>
-                     </li>
-                     <li className="nav-item">
-                        <Link className="nav-link" href="/mappool">
-                           Select Pool
-                        </Link>
-                     </li>
-                  </ul>
+                  <NavbarItems />
                </div>
                <div className="mx-lg-auto" />
                <div className="user-icon-responsive">

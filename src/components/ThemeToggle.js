@@ -9,7 +9,7 @@ export default function ThemeToggle() {
 
    return (
       <div
-         className="position-fixed bottom-0 end-0 m-3 rounded-circle p-2"
+         className="rounded-circle px-2 d-flex"
          role="button"
          aria-label="Change Theme"
          onClick={() =>

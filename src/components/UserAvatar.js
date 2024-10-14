@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { signOut } from "@/auth";
+import AvatarMenu from "./AvatarMenu";
 
 export default function UserAvatar({ src }) {
    return (
@@ -14,18 +14,7 @@ export default function UserAvatar({ src }) {
             data-bs-toggle="dropdown"
             aria-expanded="false"
          />
-         <div className="dropdown-menu dropdown-menu-end">
-            <form
-               action={async () => {
-                  "use server";
-                  await signOut({ redirectTo: "/" });
-               }}
-            >
-               <button className="dropdown-item" type="submit">
-                  Logout
-               </button>
-            </form>
-         </div>
+         <AvatarMenu />
       </div>
    );
 }

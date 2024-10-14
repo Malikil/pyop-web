@@ -16,7 +16,9 @@ export default function RootLayout({ children }) {
       <html lang="en" data-bs-theme="light">
          <body className={inter.className}>
             <Navbar />
-            <div className="container">{children}</div>
+            <div className="container" tabIndex={-1} role="main">
+               {children}
+            </div>
             <BootstrapClient />
          </body>
       </html>
