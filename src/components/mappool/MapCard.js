@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @typedef Beatmap
  * @prop {number} id
@@ -28,7 +30,6 @@ import {
    Container,
    Row
 } from "react-bootstrap";
-import { useSWRConfig } from "swr";
 import styles from "./mappool.module.css";
 import { useEffect, useState } from "react";
 import { CheckCircle, ExclamationCircle, QuestionCircle } from "react-bootstrap-icons";
@@ -38,10 +39,11 @@ import { getEnumMods } from "osu-web.js";
  * @param {object} props
  * @param {Beatmap} props.beatmap
  * @param {boolean} props.showMods
- * @param {boolean} props.approverView
+ * @param {object[]} [props.mapActions]
+ * @param {string} props.mapActions.title
+ * @param {function} props.mapActions.action
  */
 export default function MapCard(props) {
-   const { mutate } = useSWRConfig();
    const { data: reqs, isLoading } = useSubmissionRequirements();
    // Check map status
    const [errorState, setErrorState] = useState({
@@ -153,64 +155,20 @@ export default function MapCard(props) {
                >
                   Beatmap
                </CardLink>
-               {!props.approverView ? (
-                  <>
-                     <CardLink
-                        role="button"
-                        onClick={() =>
-                           mutate(
-                              "/api/db/player",
-                              () =>
-                                 fetch(
-                                    `/api/db/maps?id=${props.beatmap.id}&mods=${props.beatmap.mods}`,
-                                    {
-                                       method: "DELETE"
-                                    }
-                                 ).then(res => res.json()),
-                              {
-                                 optimisticData: player => {
-                                    const index = player.maps.current.findIndex(
-                                       m =>
-                                          m.id === props.beatmap.id && m.mods === props.beatmap.mods
-                                    );
-                                    return {
-                                       ...player,
-                                       maps: {
-                                          ...player.maps,
-                                          current: player.maps.current.filter((_, i) => i !== index)
-                                       }
-                                    };
-                                 },
-                                 populateCache: (result, player) => ({
-                                    ...player,
-                                    maps: {
-                                       ...player.maps,
-                                       current: result
-                                    }
-                                 }),
-                                 revalidate: true
-                              }
-                           )
-                        }
-                     >
-                        Remove
-                     </CardLink>
-                     <CardLink className="text-reset text-decoration-none ms-auto">
-                        {props.beatmap.approval === "approved" ? (
-                           <CheckCircle className="text-success" title="Approved" />
-                        ) : props.beatmap.approval === "rejected" ? (
-                           <ExclamationCircle className="text-danger" title="Rejected" />
-                        ) : (
-                           <QuestionCircle className="text-warning" title="Pending" />
-                        )}
-                     </CardLink>
-                  </>
-               ) : (
-                  <>
-                     <CardLink role="button">Approve</CardLink>
-                     <CardLink role="button">Reject</CardLink>
-                  </>
-               )}
+               {props.mapActions?.map(fn => (
+                  <CardLink key={fn.title} role="button" onClick={() => fn.action(props.beatmap)}>
+                     {fn.title}
+                  </CardLink>
+               ))}
+               <CardLink className="text-reset text-decoration-none ms-auto">
+                  {props.beatmap.approval === "approved" ? (
+                     <CheckCircle className="text-success" title="Approved" />
+                  ) : props.beatmap.approval === "rejected" ? (
+                     <ExclamationCircle className="text-danger" title="Rejected" />
+                  ) : (
+                     <QuestionCircle className="text-warning" title="Pending" />
+                  )}
+               </CardLink>
             </div>
          </CardBody>
       </Card>

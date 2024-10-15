@@ -15,6 +15,7 @@ export const POST = async req => {
    const osuapi = new Client(session.accessToken);
    try {
       const beatmap = await osuapi.beatmaps.getBeatmap(mapid);
+      console.log(`Beatmap: ${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title}`);
       if (mods !== 0) {
          const attributes = await osuapi.beatmaps.getBeatmapAttributes(mapid, "osu", {
             body: { mods: (mods | ModsEnum.EZ) ^ ModsEnum.EZ }
@@ -42,6 +43,7 @@ export const POST = async req => {
             beatmap.total_length = calcModStat.ht.length(beatmap.total_length);
             beatmap.hit_length = calcModStat.ht.length(beatmap.hit_length);
          }
+         console.log("Updated mod values");
       }
       // Check for leaderboard
       // Don't bother with stars or length, that's addressed within the map list already
@@ -57,6 +59,7 @@ export const POST = async req => {
          // If there are less than 3 scores, accept it anyways if the player themself has one of them
          if (scoreList.length > 2 || scoreList.find(s => s.user_id === session.user.id))
             approval = "approved";
+         console.log(`Auto approve: ${approval}`);
       }
 
       // Prepare the database object
@@ -86,7 +89,7 @@ export const POST = async req => {
       return NextResponse.json(dbBeatmap);
    } catch (err) {
       console.log(err.response1);
-      return new NextResponse(null, { status: err.response1?.status || 500 });
+      return new NextResponse('', { status: err.response1?.status || 500 });
    }
 };
 

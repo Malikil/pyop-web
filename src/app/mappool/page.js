@@ -8,8 +8,10 @@ import { useRouter } from "next/navigation";
 import PoolStats from "@/components/mappool/PoolStats";
 import { useEffect, useState } from "react";
 import MapList from "@/components/mappool/MapList";
+import { useSWRConfig } from "swr";
 
 export default function Mappool() {
+   const { mutate } = useSWRConfig();
    const { data: player, isLoading, isError } = usePlayer();
    const router = useRouter();
 
@@ -58,7 +60,44 @@ export default function Mappool() {
    if (isError || !player) return router.push("/");
    return (
       <Container className="py-2">
-         <MapList maps={maps} />
+         <MapList
+            maps={maps}
+            mapActions={[
+               {
+                  title: "Remove",
+                  action: beatmap =>
+                     mutate(
+                        "/api/db/player",
+                        () =>
+                           fetch(`/api/db/maps?id=${beatmap.id}&mods=${beatmap.mods}`, {
+                              method: "DELETE"
+                           }).then(res => res.json()),
+                        {
+                           optimisticData: player => {
+                              const index = player.maps.current.findIndex(
+                                 m => m.id === beatmap.id && m.mods === beatmap.mods
+                              );
+                              return {
+                                 ...player,
+                                 maps: {
+                                    ...player.maps,
+                                    current: player.maps.current.filter((_, i) => i !== index)
+                                 }
+                              };
+                           },
+                           populateCache: (result, player) => ({
+                              ...player,
+                              maps: {
+                                 ...player.maps,
+                                 current: result
+                              }
+                           }),
+                           revalidate: true
+                        }
+                     )
+               }
+            ]}
+         />
          <PoolStats maps={player.maps.current} />
          <AddMapButton count={player.maps.current.length} />
       </Container>

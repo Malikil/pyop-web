@@ -13,6 +13,10 @@ export default function TournamentFormat() {
                      will be used to determine which 32 players will play in the main bracket.
                   </li>
                   <li>Players are seeded based on global rank.</li>
+                  <li>
+                     Specific format for play-ins may be updated based on player sentiment and how
+                     many sign ups there actually are.
+                  </li>
                </ul>
             </li>
             <li>
