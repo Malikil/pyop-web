@@ -1,11 +1,11 @@
 import { DashCircle } from "react-bootstrap-icons";
-import MapCard from "./mapcard";
+import MapCard from "./MapCard";
 import { Card, CardBody, CardImg, CardTitle, Col, Row } from "react-bootstrap";
 
 /**
  * @param {object} props
  * @param {string} props.mod
- * @param {import("./mapcard").Beatmap[]} props.maps
+ * @param {import("./MapCard").Beatmap[]} props.maps
  * @param {number} [props.minCount]
  * @param {boolean} props.showMods
  */
