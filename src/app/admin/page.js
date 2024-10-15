@@ -13,9 +13,9 @@ export default async function Admin() {
    if (!user?.osuid) redirect("/");
 
    return (
-      <div className="d-flex gap-3 flex-wrap mt-3">
-         <RegisterCard />
+      <div className="d-flex gap-3 flex-wrap my-3">
          <SubmissionsCard />
+         <RegisterCard />
       </div>
    );
 }
