@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import db from "../connection";
 import { NextResponse } from "next/server";
-import { calcModStat, Client, ModsEnum } from "osu-web.js";
+import { calcModStat, Client, ModsEnum, LegacyClient } from "osu-web.js";
 
 /**
  * @param {import('next/server').NextRequest} req
@@ -43,6 +43,22 @@ export const POST = async req => {
             beatmap.hit_length = calcModStat.ht.length(beatmap.hit_length);
          }
       }
+      // Check for leaderboard
+      // Don't bother with stars or length, that's addressed within the map list already
+      let approval = "pending";
+      if (beatmap.is_scoreable) {
+         const osuLegacy = new LegacyClient(process.env.OSU_LEGACY_KEY);
+         const scoreList = await osuLegacy.getBeatmapScores({
+            b: beatmap.id,
+            m: "osu",
+            limit: 3,
+            mods
+         });
+         // If there are less than 3 scores, accept it anyways if the player themself has one of them
+         if (scoreList.length > 2 || scoreList.find(s => s.user_id === session.user.id))
+            approval = "approved";
+      }
+
       // Prepare the database object
       const dbBeatmap = {
          id: beatmap.id,
@@ -56,13 +72,14 @@ export const POST = async req => {
          cs: beatmap.cs,
          ar: beatmap.ar,
          stars: beatmap.difficulty_rating,
-         mods
+         mods,
+         approval
       };
       console.log(dbBeatmap);
 
       const collection = db.collection("players");
       const result = await collection.updateOne(
-         { username: session.user.name },
+         { osuid: session.user.id },
          { $push: { "maps.current": dbBeatmap } }
       );
       console.log(result);
@@ -87,19 +104,22 @@ export const DELETE = async req => {
    const result = await collection.bulkWrite([
       {
          updateOne: {
-            filter: { "maps.current": { $elemMatch: { id: mapid, mods } } },
+            filter: {
+               osuid: session.user.id,
+               "maps.current": { $elemMatch: { id: mapid, mods } }
+            },
             update: { $unset: { "maps.current.$": "" } }
          }
       },
       {
-         updateOne: {
+         updateMany: {
             filter: { "maps.current": null },
             update: { $pull: { "maps.current": null } }
          }
       }
    ]);
    console.log(result);
-   const player = await collection.findOne({ username: session.user.name });
-   if (!player) return new NextResponse(null, { status: 404 });
+   const player = await collection.findOne({ osuid: session.user.id });
+   if (!player) return new NextResponse({}, { status: 404 });
    return NextResponse.json(player.maps.current);
 };

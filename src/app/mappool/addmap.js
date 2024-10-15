@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, ButtonGroup, Col, Row, Spinner, ToggleButton } from "react-bootstrap";
-import { PlusCircle } from "react-bootstrap-icons";
+import { CheckCircle, PlusCircle } from "react-bootstrap-icons";
 import {
    autoUpdate,
    offset,
@@ -46,8 +46,9 @@ export default function AddMapButton({ count }) {
             ref={refs.setReference}
             {...getReferenceProps()}
             disabled={count >= 10}
+            variant={count < 10 ? "primary" : "success"}
          >
-            <PlusCircle size={32} />
+            {count < 10 ? <PlusCircle size={32} /> : <CheckCircle size={32} />}
          </Button>
          {isOpen && (
             <div

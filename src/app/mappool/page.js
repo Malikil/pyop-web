@@ -1,13 +1,13 @@
 "use client";
 
 import { Container, Spinner } from "react-bootstrap";
-import ModPool from "./modpool";
 import AddMapButton from "./addmap";
 import { ModsEnum } from "osu-web.js";
 import usePlayer from "@/hooks/usePlayer";
 import { useRouter } from "next/navigation";
-import PoolStats from "./PoolStats";
+import PoolStats from "@/components/mappool/PoolStats";
 import { useEffect, useState } from "react";
+import MapList from "@/components/mappool/MapList";
 
 export default function Mappool() {
    const { data: player, isLoading, isError } = usePlayer();
@@ -58,13 +58,7 @@ export default function Mappool() {
    if (isError || !player) return router.push("/");
    return (
       <Container className="py-2">
-         <div className="d-flex flex-column gap-4">
-            <ModPool mod="NoMod" maps={maps.nm} minCount={2} />
-            <ModPool mod="Hidden" maps={maps.hd} minCount={2} />
-            <ModPool mod="Hard Rock" maps={maps.hr} minCount={2} />
-            <ModPool mod="Double Time" maps={maps.dt} minCount={2} />
-            {maps.other.length > 0 && <ModPool mod="Other" maps={maps.other} showMods />}
-         </div>
+         <MapList maps={maps} />
          <PoolStats maps={player.maps.current} />
          <AddMapButton count={player.maps.current.length} />
       </Container>

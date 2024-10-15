@@ -12,6 +12,7 @@
  * @prop {number} ar
  * @prop {number} stars
  * @prop {number} mods
+ * @prop {'pending'|'accepted'|'rejected'} approval
  */
 
 import useSubmissionRequirements from "@/hooks/useSubmissionRequirements";
@@ -19,7 +20,6 @@ import { convertTime } from "@/time";
 import {
    Card,
    CardBody,
-   CardFooter,
    CardImg,
    CardLink,
    CardSubtitle,
@@ -38,6 +38,7 @@ import { getEnumMods } from "osu-web.js";
  * @param {object} props
  * @param {Beatmap} props.beatmap
  * @param {boolean} props.showMods
+ * @param {boolean} props.approverView
  */
 export default function MapCard(props) {
    const { mutate } = useSWRConfig();
@@ -137,7 +138,7 @@ export default function MapCard(props) {
                </Row>
                <Row>
                   <Col>CS</Col>
-                  <Col>{props.beatmap.cs}</Col>
+                  <Col>{parseFloat(props.beatmap.cs.toFixed(2))}</Col>
                </Row>
                <Row>
                   <Col>AR</Col>
@@ -152,42 +153,58 @@ export default function MapCard(props) {
                >
                   Beatmap
                </CardLink>
-               <CardLink
-                  role="button"
-                  onClick={() =>
-                     mutate(
-                        "/api/db/player",
-                        () =>
-                           fetch(`/api/db/maps?id=${props.beatmap.id}&mods=${props.beatmap.mods}`, {
-                              method: "DELETE"
-                           }).then(res => res.json()),
-                        {
-                           optimisticData: player => {
-                              const index = player.maps.current.findIndex(
-                                 m => m.id === props.beatmap.id && m.mods === props.beatmap.mods
-                              );
-                              return {
-                                 ...player,
-                                 maps: {
-                                    ...player.maps,
-                                    current: player.maps.current.filter((_, i) => i !== index)
-                                 }
-                              };
-                           },
-                           populateCache: (result, player) => ({
-                              ...player,
-                              maps: {
-                                 ...player.maps,
-                                 current: result
+               {!props.approverView ? (
+                  <>
+                     <CardLink
+                        role="button"
+                        onClick={() =>
+                           mutate(
+                              "/api/db/player",
+                              () =>
+                                 fetch(
+                                    `/api/db/maps?id=${props.beatmap.id}&mods=${props.beatmap.mods}`,
+                                    {
+                                       method: "DELETE"
+                                    }
+                                 ).then(res => res.json()),
+                              {
+                                 optimisticData: player => {
+                                    const index = player.maps.current.findIndex(
+                                       m =>
+                                          m.id === props.beatmap.id && m.mods === props.beatmap.mods
+                                    );
+                                    return {
+                                       ...player,
+                                       maps: {
+                                          ...player.maps,
+                                          current: player.maps.current.filter((_, i) => i !== index)
+                                       }
+                                    };
+                                 },
+                                 populateCache: (result, player) => ({
+                                    ...player,
+                                    maps: {
+                                       ...player.maps,
+                                       current: result
+                                    }
+                                 }),
+                                 revalidate: true
                               }
-                           }),
-                           revalidate: true
+                           )
                         }
-                     )
-                  }
-               >
-                  Remove
-               </CardLink>
+                     >
+                        Remove
+                     </CardLink>
+                     <CardLink className="text-capitalize text-reset text-decoration-none">
+                        {props.beatmap.approval}
+                     </CardLink>
+                  </>
+               ) : (
+                  <>
+                     <CardLink role="button">Approve</CardLink>
+                     <CardLink role="button">Reject</CardLink>
+                  </>
+               )}
             </div>
          </CardBody>
       </Card>

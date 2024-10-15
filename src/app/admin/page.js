@@ -10,7 +10,7 @@ export default async function Admin() {
 
    const playersCollection = db.collection("players");
    const user = await playersCollection.findOne({ osuid: session.user.id });
-   if (!user?.osuid) redirect("/");
+   if (!user?.admin) redirect("/");
 
    return (
       <div className="d-flex gap-3 flex-wrap my-3">

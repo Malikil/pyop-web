@@ -15,11 +15,21 @@ export default async function AvatarMenu() {
    return (
       <ul className="dropdown-menu dropdown-menu-end">
          {admin && (
-            <li>
-               <Link className="dropdown-item" href="/admin">
-                  Admin
-               </Link>
-            </li>
+            <>
+               <li>
+                  <Link className="dropdown-item" href="/admin">
+                     Admin
+                  </Link>
+               </li>
+               <li>
+                  <Link className="dropdown-item" href="/admin/approver">
+                     Approving
+                  </Link>
+               </li>
+               <li>
+                  <hr className="dropdown-divider" />
+               </li>
+            </>
          )}
          <li>
             <form
