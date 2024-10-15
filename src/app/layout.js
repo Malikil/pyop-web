@@ -1,8 +1,10 @@
 import { Inter } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.css";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import BootstrapClient from "@/components/BootstrapClient";
 import Navbar from "@/components/Navbar";
+import { ToastContainer } from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +22,7 @@ export default function RootLayout({ children }) {
                {children}
             </div>
             <BootstrapClient />
+            <ToastContainer position="bottom-center" autoClose={2500} hideProgressBar />
          </body>
       </html>
    );
