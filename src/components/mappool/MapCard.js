@@ -12,7 +12,7 @@
  * @prop {number} ar
  * @prop {number} stars
  * @prop {number} mods
- * @prop {'pending'|'accepted'|'rejected'} approval
+ * @prop {'pending'|'approved'|'rejected'} approval
  */
 
 import useSubmissionRequirements from "@/hooks/useSubmissionRequirements";
@@ -31,7 +31,7 @@ import {
 import { useSWRConfig } from "swr";
 import styles from "./mappool.module.css";
 import { useEffect, useState } from "react";
-import { ExclamationCircle } from "react-bootstrap-icons";
+import { CheckCircle, ExclamationCircle, QuestionCircle } from "react-bootstrap-icons";
 import { getEnumMods } from "osu-web.js";
 
 /**
@@ -145,7 +145,7 @@ export default function MapCard(props) {
                   <Col>{parseFloat(props.beatmap.ar.toFixed(2))}</Col>
                </Row>
             </Container>
-            <div className="mt-auto">
+            <div className="mt-auto d-flex">
                <CardLink
                   href={`https://osu.ppy.sh/beatmapsets/${props.beatmap.setid}#osu/${props.beatmap.id}`}
                   target="_blank"
@@ -195,8 +195,14 @@ export default function MapCard(props) {
                      >
                         Remove
                      </CardLink>
-                     <CardLink className="text-capitalize text-reset text-decoration-none">
-                        {props.beatmap.approval}
+                     <CardLink className="text-reset text-decoration-none ms-auto">
+                        {props.beatmap.approval === "approved" ? (
+                           <CheckCircle className="text-success" title="Approved" />
+                        ) : props.beatmap.approval === "rejected" ? (
+                           <ExclamationCircle className="text-danger" title="Rejected" />
+                        ) : (
+                           <QuestionCircle className="text-warning" title="Pending" />
+                        )}
                      </CardLink>
                   </>
                ) : (
