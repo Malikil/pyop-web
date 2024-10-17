@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import MapList from "@/components/mappool/MapList";
 import { redirect } from "next/navigation";
 import { ModsEnum } from "osu-web.js";
+import { createApprovalFunc } from "./actions";
 
 export default async function ApproverPage() {
    const session = await auth();
@@ -59,7 +60,13 @@ export default async function ApproverPage() {
 
    return (
       <div>
-         <MapList maps={maps} />
+         <MapList
+            maps={maps}
+            mapActions={[
+               { title: "Approve", action: createApprovalFunc("approved") },
+               { title: "Reject", action: createApprovalFunc("rejected") }
+            ]}
+         />
       </div>
    );
 }
