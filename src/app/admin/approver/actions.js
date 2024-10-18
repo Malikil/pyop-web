@@ -1,5 +1,8 @@
+"use server";
+
 import db from "@/app/api/db/connection";
 import { auth } from "@/auth";
+import { ModsEnum } from "osu-web.js";
 import { cache } from "react";
 
 const checkApprover = cache(async osuid => {
@@ -8,29 +11,79 @@ const checkApprover = cache(async osuid => {
    return player && (player.admin || player.approver);
 });
 
-export function createApprovalFunc(status) {
-   return async beatmap => {
-      "use server";
-      const session = await auth();
-      if (!(await checkApprover(session.user.id))) return null;
+export async function getApprovalMaplist() {
+   const session = await auth();
+   if (!session) throw new Error("401");
+   if (!(await checkApprover(session.user.id))) throw new Error(`403 - ${session.user.id}`);
 
-      const collection = db.collection("players");
-      const result = await collection.updateMany(
-         {
-            "maps.current": {
-               $elemMatch: {
-                  id: beatmap.id,
-                  mods: beatmap.mods
-               }
-            }
-         },
-         {
-            $set: {
-               "maps.current.$.approval": status
+   const collection = db.collection("players");
+   const mapCursor = collection.aggregate([
+      {
+         $match: {
+            "maps.current.approval": "pending"
+         }
+      },
+      { $unwind: "$maps.current" },
+      {
+         $match: {
+            "maps.current.approval": "pending"
+         }
+      },
+      {
+         $project: {
+            _id: 0,
+            map: "$maps.current"
+         }
+      }
+   ]);
+   const maps = {
+      nm: [],
+      hd: [],
+      hr: [],
+      dt: [],
+      other: []
+   };
+   for await (const map of mapCursor)
+      switch (map.map.mods) {
+         case 0:
+            maps.nm.push(map.map);
+            break;
+         case ModsEnum.HD:
+            maps.hd.push(map.map);
+            break;
+         case ModsEnum.HR:
+            maps.hr.push(map.map);
+            break;
+         case ModsEnum.DT:
+            maps.dt.push(map.map);
+            break;
+         default:
+            maps.other.push(map.map);
+      }
+
+   return maps;
+}
+
+export async function updateApproval(beatmap, status) {
+   const session = await auth();
+   if (!(await checkApprover(session.user.id))) throw new Error("Not Authorized");
+
+   const collection = db.collection("players");
+   const result = await collection.updateMany(
+      {
+         "maps.current": {
+            $elemMatch: {
+               id: beatmap.id,
+               mods: beatmap.mods
             }
          }
-      );
-      console.log(result);
-      return true;
-   };
+      },
+      {
+         $set: {
+            "maps.current.$.approval": status
+         }
+      }
+   );
+   console.log(result);
+   return true;
 }

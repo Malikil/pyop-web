@@ -1,72 +1,73 @@
-import db from "@/app/api/db/connection";
-import { auth } from "@/auth";
+"use client";
+
 import MapList from "@/components/mappool/MapList";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { getApprovalMaplist, updateApproval } from "./actions";
+import useSWR from "swr";
 import { ModsEnum } from "osu-web.js";
-import { createApprovalFunc } from "./actions";
+import { Spinner } from "react-bootstrap";
 
-export default async function ApproverPage() {
-   const session = await auth();
-   if (!session) redirect("/");
+export default function ApproverPage() {
+   const { data, error, isLoading, mutate } = useSWR("approvalMaps", getApprovalMaplist);
+   const router = useRouter();
 
-   const playersCollection = db.collection("players");
-   const user = await playersCollection.findOne({ osuid: session.user.id });
-   if (!user || !(user.approver || user.admin)) redirect("/");
+   if (isLoading) return <Spinner className="m-4" />;
+   if (error) return router.push("/");
 
-   // Get the list of maps
-   const mapCursor = playersCollection.aggregate([
-      {
-         $match: {
-            "maps.current.approval": "pending"
-         }
-      },
-      { $unwind: "$maps.current" },
-      {
-         $match: {
-            "maps.current.approval": "pending"
-         }
-      },
-      {
-         $project: {
-            _id: 0,
-            map: "$maps.current"
-         }
-      }
-   ]);
-   const maps = {
-      nm: [],
-      hd: [],
-      hr: [],
-      dt: [],
-      other: []
+   const popCache = (beatmap, status) => (result, oldData) => {
+      if (!result) return oldData;
+      // It's 11:53pm and I don't feel like thinking any harder about this
+      // Optimization Jank O.o
+      if (beatmap.mods === 0)
+         return {
+            ...oldData,
+            nm: oldData.nm.map(m => (m.id === beatmap.id ? { ...m, approval: status } : m))
+         };
+      else if (beatmap.mods === ModsEnum.HD)
+         return {
+            ...oldData,
+            hd: oldData.hd.map(m => (m.id === beatmap.id ? { ...m, approval: status } : m))
+         };
+      else if (beatmap.mods === ModsEnum.HR)
+         return {
+            ...oldData,
+            hr: oldData.hr.map(m => (m.id === beatmap.id ? { ...m, approval: status } : m))
+         };
+      else if (beatmap.mods === ModsEnum.DT)
+         return {
+            ...oldData,
+            dt: oldData.dt.map(m => (m.id === beatmap.id ? { ...m, approval: status } : m))
+         };
+      else
+         return {
+            ...oldData,
+            other: oldData.other.map(m =>
+               m.id === beatmap.id && m.mods === beatmap.mods ? { ...m, approval: status } : m
+            )
+         };
    };
-   for await (const map of mapCursor)
-      switch (map.map.mods) {
-         case 0:
-            maps.nm.push(map.map);
-            break;
-         case ModsEnum.HD:
-            maps.hd.push(map.map);
-            break;
-         case ModsEnum.HR:
-            maps.hr.push(map.map);
-            break;
-         case ModsEnum.DT:
-            maps.dt.push(map.map);
-            break;
-         default:
-            maps.other.push(map.map);
-      }
 
    return (
-      <div>
-         <MapList
-            maps={maps}
-            mapActions={[
-               { title: "Approve", action: createApprovalFunc("approved") },
-               { title: "Reject", action: createApprovalFunc("rejected") }
-            ]}
-         />
-      </div>
+      <MapList
+         maps={data}
+         mapActions={[
+            {
+               title: "Approve",
+               action: async beatmap => {
+                  mutate(() => updateApproval(beatmap, "approved"), {
+                     populateCache: popCache(beatmap, "approved")
+                  });
+               }
+            },
+            {
+               title: "Reject",
+               action: async beatmap => {
+                  mutate(() => updateApproval(beatmap, "rejected"), {
+                     populateCache: popCache(beatmap, "rejected")
+                  });
+               }
+            }
+         ]}
+      />
    );
 }
