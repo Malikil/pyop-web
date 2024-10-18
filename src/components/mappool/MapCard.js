@@ -163,7 +163,8 @@ export default function MapCard(props) {
                <CardLink className="text-reset text-decoration-none ms-auto">
                   {props.beatmap.approval === "approved" ? (
                      <CheckCircle className="text-success" title="Approved" />
-                  ) : props.beatmap.approval === "rejected" ? (
+                  ) : props.beatmap.approval === "rejected" ||
+                    errorState.style === styles.map_error ? (
                      <ExclamationCircle className="text-danger" title="Rejected" />
                   ) : (
                      <QuestionCircle className="text-warning" title="Pending" />
