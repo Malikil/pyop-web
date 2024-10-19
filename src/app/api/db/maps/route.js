@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import db from "../connection";
 import { NextResponse } from "next/server";
-import { calcModStat, Client, ModsEnum, LegacyClient } from "osu-web.js";
+import { calcModStat, Client, ModesEnum, ModsEnum, LegacyClient } from "osu-web.js";
 
 /**
  * @param {import('next/server').NextRequest} req
@@ -16,6 +16,10 @@ export const POST = async req => {
    try {
       const beatmap = await osuapi.beatmaps.getBeatmap(mapid);
       console.log(`Beatmap: ${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title}`);
+      // Reject if the gamemode is wrong
+      if (beatmap.mode_int !== ModesEnum.osu)
+         return new NextResponse('Invalid game mode', { status: 400 });
+
       if (mods !== 0) {
          const attributes = await osuapi.beatmaps.getBeatmapAttributes(mapid, "osu", {
             body: { mods: (mods | ModsEnum.EZ) ^ ModsEnum.EZ }
