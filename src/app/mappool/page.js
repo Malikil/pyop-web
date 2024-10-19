@@ -132,8 +132,8 @@ export default function Mappool() {
                                  ...player.maps,
                                  current: result
                               }
-                           }),
-                           revalidate: true
+                           })
+                           //revalidate: true
                         }
                      )
                },
@@ -185,11 +185,36 @@ export default function Mappool() {
                         formData.append("image", compressedData);
                         formData.append("beatmapId", selectedMap.id);
                         formData.append("mods", selectedMap.mods);
-                        await toast.promise(uploadScreenshot(formData), {
-                           pending: "Uploading",
-                           success: "Image uploaded",
-                           error: "Unable to upload image"
-                        });
+                        await toast.promise(
+                           mutate("/api/db/player", () => uploadScreenshot(formData), {
+                              optimisticData: oldData => {
+                                 const updatedMaplist = oldData.maps.current;
+                                 const index = updatedMaplist.findIndex(
+                                    m => m.id === selectedMap.id && m.mods === selectedMap.mods
+                                 );
+                                 updatedMaplist[index].screenshot = compressedData;
+                                 return {
+                                    ...oldData,
+                                    maps: {
+                                       ...oldData.maps,
+                                       current: updatedMaplist
+                                    }
+                                 };
+                              },
+                              populateCache: (result, oldData) => ({
+                                 ...oldData,
+                                 maps: {
+                                    ...oldData.maps,
+                                    current: result
+                                 }
+                              })
+                           }),
+                           {
+                              pending: "Uploading",
+                              success: "Image uploaded",
+                              error: "Unable to upload image"
+                           }
+                        );
                      } catch (err) {
                         toast.error("Unable to upload image");
                         console.error(err);
