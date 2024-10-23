@@ -34,6 +34,5 @@ export async function uploadScreenshot(formData) {
       },
       { returnDocument: "after" }
    );
-   console.log(result.maps.current[8].screenshot);
    return result.maps.current;
 }

@@ -141,14 +141,11 @@ export default function Mappool() {
                   title: "Screenshot",
                   action: async beatmap => {
                      setSelectedMap(beatmap);
-                     const binData = beatmap.screenshot;
-                     const blob = await new Promise(resolve => {
-                        const fr = new FileReader();
-                        fr.addEventListener("load", e => resolve(e.target.result));
-                        fr.readAsDataURL(binData);
-                     });
-                     console.log(blob);
-                     if (blob) {
+                     if (beatmap.screenshot) {
+                        console.log(beatmap.screenshot);
+                        const buf = Buffer.from(beatmap.screenshot.data);
+                        const blob = new Blob([buf], { type: 'image/jpeg' });
+                        console.log(blob);
                         const blobUrl = URL.createObjectURL(blob);
                         setScreenshot(blobUrl);
                      } else setScreenshot(null);
@@ -178,6 +175,7 @@ export default function Mappool() {
                   action={async formData => {
                      setSubmitting(true);
                      const screenshotFile = formData.get("screenshot");
+                     // Is this actually redundant?
                      const screenshotData = await new Promise(resolve => {
                         const fr = new FileReader();
                         fr.addEventListener("load", e => resolve(e.target.result));
@@ -198,7 +196,7 @@ export default function Mappool() {
                                  const index = updatedMaplist.findIndex(
                                     m => m.id === selectedMap.id && m.mods === selectedMap.mods
                                  );
-                                 updatedMaplist[index].screenshot = compressedData;
+                                 updatedMaplist[index].screenshot = compressedData.arrayBuffer();
                                  return {
                                     ...oldData,
                                     maps: {
