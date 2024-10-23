@@ -8,15 +8,9 @@ export async function uploadScreenshot(formData) {
    if (!session || !session.user.id) throw new Error("401");
    console.log(`${session.user.name} uploads screenshot`);
    const imageData = formData.get("image");
-   console.log(imageData instanceof File);
    console.log(imageData);
-   console.log(imageData instanceof Blob);
-
-   const temp = imageData.bytes();
-   console.log(temp);
-
    const data = {
-      image: Buffer.from(imageData).toString("base64url"),
+      image: new Uint8Array(await imageData.arrayBuffer()),
       id: parseInt(formData.get("beatmapId")),
       mods: parseInt(formData.get("mods"))
    };
@@ -40,6 +34,6 @@ export async function uploadScreenshot(formData) {
       },
       { returnDocument: "after" }
    );
-   console.log(result.maps.current);
+   console.log(result.maps.current[8].screenshot);
    return result.maps.current;
 }

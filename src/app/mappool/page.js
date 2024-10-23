@@ -139,9 +139,15 @@ export default function Mappool() {
                },
                {
                   title: "Screenshot",
-                  action: beatmap => {
+                  action: async beatmap => {
                      setSelectedMap(beatmap);
-                     const blob = beatmap.screenshot;
+                     const binData = beatmap.screenshot;
+                     const blob = await new Promise(resolve => {
+                        const fr = new FileReader();
+                        fr.addEventListener("load", e => resolve(e.target.result));
+                        fr.readAsDataURL(binData);
+                     });
+                     console.log(blob);
                      if (blob) {
                         const blobUrl = URL.createObjectURL(blob);
                         setScreenshot(blobUrl);
