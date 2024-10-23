@@ -11,6 +11,7 @@ import ModPool from "./Modpool";
  * @param {object[]} props.mapActions
  * @param {string} props.mapActions.title
  * @param {function} props.mapActions.action
+ * @param {function} props.mapActions.condition
  */
 export default function MapList({ maps, mapActions }) {
    return (

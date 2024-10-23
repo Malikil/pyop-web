@@ -205,13 +205,16 @@ export default function Mappool() {
                                     }
                                  };
                               },
-                              populateCache: (result, oldData) => ({
-                                 ...oldData,
-                                 maps: {
-                                    ...oldData.maps,
-                                    current: result
-                                 }
-                              })
+                              populateCache: (result, oldData) => {
+                                 console.log(result);
+                                 return {
+                                    ...oldData,
+                                    maps: {
+                                       ...oldData.maps,
+                                       current: result
+                                    }
+                                 };
+                              }
                            }),
                            {
                               pending: "Uploading",

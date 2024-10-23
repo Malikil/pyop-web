@@ -42,6 +42,7 @@ import { getEnumMods } from "osu-web.js";
  * @param {object[]} [props.mapActions]
  * @param {string} props.mapActions.title
  * @param {function} props.mapActions.action
+ * @param {function} props.mapActions.condition
  */
 export default function MapCard(props) {
    const { data: reqs, isLoading } = useSubmissionRequirements();
@@ -155,11 +156,19 @@ export default function MapCard(props) {
                >
                   Beatmap
                </CardLink>
-               {props.mapActions?.map(fn => (
-                  <CardLink key={fn.title} role="button" onClick={() => fn.action(props.beatmap)}>
-                     {fn.title}
-                  </CardLink>
-               ))}
+               {props.mapActions
+                  ?.map(fn =>
+                     !fn.condition || fn.condition(props.beatmap) ? (
+                        <CardLink
+                           key={fn.title}
+                           role="button"
+                           onClick={() => fn.action(props.beatmap)}
+                        >
+                           {fn.title}
+                        </CardLink>
+                     ) : null
+                  )
+                  .filter(p => p)}
                <CardLink className="text-reset text-decoration-none ms-auto">
                   {props.beatmap.approval === "approved" ? (
                      <CheckCircle className="text-success" title="Approved" />

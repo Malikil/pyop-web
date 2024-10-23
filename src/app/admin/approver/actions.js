@@ -43,23 +43,29 @@ export async function getApprovalMaplist() {
       dt: [],
       other: []
    };
-   for await (const map of mapCursor)
-      switch (map.map.mods) {
+   for await (const dbobj of mapCursor) {
+      const map = dbobj.map;
+      if (map.screenshot)
+         map.screenshot = {
+            data: Array.from(map.screenshot.buffer)
+         };
+      switch (map.mods) {
          case 0:
-            maps.nm.push(map.map);
+            maps.nm.push(map);
             break;
          case ModsEnum.HD:
-            maps.hd.push(map.map);
+            maps.hd.push(map);
             break;
          case ModsEnum.HR:
-            maps.hr.push(map.map);
+            maps.hr.push(map);
             break;
          case ModsEnum.DT:
-            maps.dt.push(map.map);
+            maps.dt.push(map);
             break;
          default:
-            maps.other.push(map.map);
+            maps.other.push(map);
       }
+   }
 
    return maps;
 }

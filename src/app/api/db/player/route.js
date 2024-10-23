@@ -16,7 +16,6 @@ export const GET = async () => {
       const mapData = { ...m };
       // Theoretically I should verify the file type before storing it in the db
       mapData.screenshot = m.screenshot.buffer;
-      console.log(m.screenshot.buffer);
       return mapData;
    });
    // !! Per above: I thought I would have to come back to this to update it but it seems

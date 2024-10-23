@@ -34,5 +34,14 @@ export async function uploadScreenshot(formData) {
       },
       { returnDocument: "after" }
    );
+   // See note in api/db/player/route.js
+   result.maps.current = result.maps.current.map(m => {
+      if (!m.screenshot) return m;
+      const mapData = { ...m };
+      mapData.screenshot = {
+         data: Array.from(m.screenshot.buffer)
+      };
+      return mapData;
+   });
    return result.maps.current;
 }

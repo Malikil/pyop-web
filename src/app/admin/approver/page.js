@@ -5,11 +5,15 @@ import { useRouter } from "next/navigation";
 import { getApprovalMaplist, updateApproval } from "./actions";
 import useSWR from "swr";
 import { ModsEnum } from "osu-web.js";
-import { Spinner } from "react-bootstrap";
+import { Button, Modal, Spinner } from "react-bootstrap";
+import { useState } from "react";
 
 export default function ApproverPage() {
    const { data, error, isLoading, mutate } = useSWR("approvalMaps", getApprovalMaplist);
    const router = useRouter();
+
+   const [screenshot, setScreenshot] = useState(null);
+   const [showModal, setShowModal] = useState(false);
 
    if (isLoading) return <Spinner className="m-4" />;
    if (error) return router.push("/");
@@ -48,26 +52,62 @@ export default function ApproverPage() {
    };
 
    return (
-      <MapList
-         maps={data}
-         mapActions={[
-            {
-               title: "Approve",
-               action: async beatmap => {
-                  mutate(() => updateApproval(beatmap, "approved"), {
-                     populateCache: popCache(beatmap, "approved")
-                  });
+      <>
+         <MapList
+            maps={data}
+            mapActions={[
+               {
+                  title: "Approve",
+                  action: async beatmap => {
+                     mutate(() => updateApproval(beatmap, "approved"), {
+                        populateCache: popCache(beatmap, "approved")
+                     });
+                  }
+               },
+               {
+                  title: "Reject",
+                  action: async beatmap => {
+                     mutate(() => updateApproval(beatmap, "rejected"), {
+                        populateCache: popCache(beatmap, "rejected")
+                     });
+                  }
+               },
+               {
+                  title: "Screenshot",
+                  action: async beatmap => {
+                     if (beatmap.screenshot) {
+                        console.log(beatmap.screenshot);
+                        const buf = Buffer.from(beatmap.screenshot.data);
+                        const blob = new Blob([buf], { type: "image/jpeg" });
+                        console.log(blob);
+                        const blobUrl = URL.createObjectURL(blob);
+                        setScreenshot(blobUrl);
+                     } else setScreenshot(null);
+
+                     setShowModal(true);
+                  },
+                  condition: beatmap => !!beatmap.screenshot
                }
-            },
-            {
-               title: "Reject",
-               action: async beatmap => {
-                  mutate(() => updateApproval(beatmap, "rejected"), {
-                     populateCache: popCache(beatmap, "rejected")
-                  });
-               }
-            }
-         ]}
-      />
+            ]}
+         />
+         <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal.Header closeButton>
+               <Modal.Title>Screenshot</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+               {screenshot && (
+                  <img
+                     src={screenshot}
+                     alt="Submitted Screenshot"
+                     width="100%"
+                     style={{ objectFit: "contain" }}
+                  />
+               )}
+            </Modal.Body>
+            <Modal.Footer>
+               <Button onClick={() => setShowModal(false)}>Close</Button>
+            </Modal.Footer>
+         </Modal>
+      </>
    );
 }
