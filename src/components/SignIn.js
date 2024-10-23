@@ -1,10 +1,12 @@
-import { auth, signIn } from "@/auth";
+import { auth, signIn, signOut } from "@/auth";
 import Button from "react-bootstrap/Button";
 import UserAvatar from "./UserAvatar";
 
 export default async function SignIn() {
    const session = await auth();
-   if (!session?.user)
+   const expires = new Date(session?.expires);
+   const now = new Date(Date.now());
+   if (!session?.user || expires < now) {
       return (
          <form
             action={async () => {
@@ -15,5 +17,6 @@ export default async function SignIn() {
             <Button type="submit">Log in with osu!</Button>
          </form>
       );
+   }
    return <UserAvatar src={session.user.image} />;
 }
