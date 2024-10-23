@@ -144,14 +144,15 @@ export default function Mappool() {
                      if (beatmap.screenshot) {
                         console.log(beatmap.screenshot);
                         const buf = Buffer.from(beatmap.screenshot.data);
-                        const blob = new Blob([buf], { type: 'image/jpeg' });
+                        const blob = new Blob([buf], { type: "image/jpeg" });
                         console.log(blob);
                         const blobUrl = URL.createObjectURL(blob);
                         setScreenshot(blobUrl);
                      } else setScreenshot(null);
 
                      setShowModal(true);
-                  }
+                  },
+                  condition: beatmap => !beatmap.approval || beatmap.approval === "pending"
                }
             ]}
          />
