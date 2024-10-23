@@ -223,7 +223,7 @@ export default function Mappool() {
                            }
                         );
                      } catch (err) {
-                        toast.error("Unable to upload image");
+                        toast.error("Error during upload");
                         console.error(err);
                      }
                      setSubmitting(false);
