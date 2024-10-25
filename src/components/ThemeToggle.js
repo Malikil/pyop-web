@@ -5,7 +5,8 @@ import { MoonStars, Sun } from "react-bootstrap-icons";
 
 export default function ThemeToggle() {
    const [curTheme, setCurTheme] = useState();
-   useEffect(() => setCurTheme(document.documentElement.getAttribute("data-bs-theme")), []);
+   useEffect(() => setCurTheme(t => t || localStorage.getItem("display-theme") || "dark"), []);
+   useEffect(() => document.documentElement.setAttribute("data-bs-theme", curTheme), [curTheme]);
 
    return (
       <div
@@ -15,10 +16,10 @@ export default function ThemeToggle() {
          onClick={() =>
             setCurTheme(prev => {
                if (prev === "dark") {
-                  document.documentElement.setAttribute("data-bs-theme", "light");
+                  localStorage.setItem("display-theme", "light");
                   return "light";
                } else {
-                  document.documentElement.setAttribute("data-bs-theme", "dark");
+                  localStorage.setItem("display-theme", "dark");
                   return "dark";
                }
             })

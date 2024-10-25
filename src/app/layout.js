@@ -15,7 +15,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
    return (
-      <html lang="en" data-bs-theme="light">
+      <html lang="en" data-bs-theme="dark">
          <body className={inter.className}>
             <Navbar />
             <div className="container" tabIndex={-1} role="main">
