@@ -3,6 +3,7 @@ import db from "../api/db/connection";
 import { redirect } from "next/navigation";
 import RegisterCard from "./RegisterCard";
 import SubmissionsCard from "./SubmissionsCard";
+import AdminActions from "./AdminActions";
 
 export default async function Admin() {
    const session = await auth();
@@ -16,6 +17,7 @@ export default async function Admin() {
       <div className="d-flex gap-3 flex-wrap my-3">
          <SubmissionsCard />
          <RegisterCard />
+         <AdminActions />
       </div>
    );
 }

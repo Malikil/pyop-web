@@ -1,6 +1,14 @@
 "use server";
 
+import { auth } from "@/auth";
 import db from "../api/db/connection";
+import { cache } from "react";
+
+const checkAdmin = cache(async osuid => {
+   const collection = db.collection("players");
+   const player = await collection.findOne({ osuid });
+   return player && player.admin;
+});
 
 /**
  * @param {object} data
@@ -23,6 +31,26 @@ export async function addPlayer(data) {
       }
    });
    return true;
+}
+
+export async function advancePools() {
+   const session = await auth();
+   if (!session || !(await checkAdmin(session.user.id))) throw new Error("401");
+   console.log("Advance mappools");
+
+   const result = await db.collection("players").updateMany({}, [
+      {
+         $set: {
+            maps: {
+               current: [],
+               previous: {
+                  $concatArrays: ["$maps.previous", "$maps.current"]
+               }
+            }
+         }
+      }
+   ]);
+   console.log(result);
 }
 
 /**

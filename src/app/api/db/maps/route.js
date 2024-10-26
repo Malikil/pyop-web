@@ -11,6 +11,13 @@ export const POST = async req => {
    const { mapid, mods } = await req.json();
    console.log(`${session.user.name} adds map ${mapid} with mods ${mods}`);
 
+   // Make sure the player hasn't already used this map previously
+   const collection = db.collection("players");
+   const player = await collection.findOne({ osuid: session.user.id });
+   const prevMaps = player.maps.previous;
+   if (prevMaps.some(m => m.id === mapid))
+      return new NextResponse({ message: "Map already used" }, { status: 409 });
+
    // Get beatmap info
    const osuapi = new Client(session.accessToken);
    try {
@@ -18,7 +25,7 @@ export const POST = async req => {
       console.log(`Beatmap: ${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title}`);
       // Reject if the gamemode is wrong
       if (beatmap.mode_int !== ModesEnum.osu)
-         return new NextResponse('Invalid game mode', { status: 400 });
+         return new NextResponse("Invalid game mode", { status: 400 });
 
       if (mods !== 0) {
          const attributes = await osuapi.beatmaps.getBeatmapAttributes(mapid, "osu", {
@@ -84,7 +91,6 @@ export const POST = async req => {
       };
       console.log(dbBeatmap);
 
-      const collection = db.collection("players");
       const result = await collection.updateOne(
          { osuid: session.user.id },
          { $push: { "maps.current": dbBeatmap } }
@@ -93,7 +99,7 @@ export const POST = async req => {
       return NextResponse.json(dbBeatmap);
    } catch (err) {
       console.log(err.response1);
-      return new NextResponse('', { status: err.response1?.status || 500 });
+      return new NextResponse("", { status: err.response1?.status || 500 });
    }
 };
 
