@@ -15,36 +15,45 @@ import { uploadScreenshot } from "./actions";
 const compressImage = imgData =>
    new Promise((resolve, reject) => {
       const img = document.createElement("img");
+      img.onload = () => {
+         console.log(img);
+         const canvas = document.createElement("canvas");
+         const context = canvas.getContext("2d");
+
+         const originalWidth = img.width;
+         const originalHeight = img.height;
+         console.log(originalWidth, originalHeight);
+
+         const baseWidth = 480;
+         const baseHeight = 270;
+         const canvasWidth = Math.min(
+            baseWidth,
+            ((originalWidth * baseHeight) / originalHeight) | 0
+         );
+         const canvasHeight = Math.min(
+            baseHeight,
+            ((originalHeight * baseWidth) / originalWidth) | 0
+         );
+         console.log(canvasWidth, canvasHeight);
+
+         canvas.width = Math.min(originalWidth, canvasWidth);
+         canvas.height = Math.min(originalHeight, canvasHeight);
+         console.log(canvas.width, canvas.height);
+
+         try {
+            context.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+         } catch (err) {
+            return reject(err);
+         }
+
+         // Reduce quality
+         canvas.toBlob(blob => {
+            if (blob) resolve(blob);
+            else reject("No blob");
+         }, "image/jpeg");
+      };
+      img.onerror = () => reject("Image loading error");
       img.src = imgData;
-      console.log(img);
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-
-      const originalWidth = img.width;
-      const originalHeight = img.height;
-      console.log(originalWidth, originalHeight);
-
-      const baseWidth = 480;
-      const baseHeight = 270;
-      const canvasWidth = Math.min(baseWidth, ((originalWidth * baseHeight) / originalHeight) | 0);
-      const canvasHeight = Math.min(baseHeight, ((originalHeight * baseWidth) / originalWidth) | 0);
-      console.log(canvasWidth, canvasHeight);
-
-      canvas.width = Math.min(originalWidth, canvasWidth);
-      canvas.height = Math.min(originalHeight, canvasHeight);
-      console.log(canvas.width, canvas.height);
-
-      try {
-         context.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-      } catch (err) {
-         return reject(err);
-      }
-
-      // Reduce quality
-      canvas.toBlob(blob => {
-         if (blob) resolve(blob);
-         else reject("No blob");
-      }, "image/jpeg");
    });
 
 export default function Mappool() {
