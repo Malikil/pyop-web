@@ -9,6 +9,11 @@ const checkAdmin = cache(async osuid => {
    const player = await collection.findOne({ osuid });
    return player && player.admin;
 });
+const verify = async () => {
+   const session = await auth();
+   if (!session || !(await checkAdmin(session.user.id))) throw new Error("401");
+   return session;
+};
 
 /**
  * @param {object} data
@@ -16,6 +21,7 @@ const checkAdmin = cache(async osuid => {
  * @param {string} data.discordId
  */
 export async function addPlayer(data) {
+   await verify();
    const playersCollection = db.collection("players");
    const addingPlayer = await playersCollection.findOne({
       $or: [{ osuid: data.osuId }, { discordid: data.discordId }]
@@ -34,8 +40,7 @@ export async function addPlayer(data) {
 }
 
 export async function advancePools() {
-   const session = await auth();
-   if (!session || !(await checkAdmin(session.user.id))) throw new Error("401");
+   const session = await verify();
    console.log("Advance mappools");
 
    const result = await db.collection("players").updateMany({}, [
@@ -53,6 +58,19 @@ export async function advancePools() {
    console.log(result);
 }
 
+export async function clearScreenshots() {
+   const session = await verify();
+   console.log("Clear screenshots");
+   const playersCollection = db.collection("players");
+   const result = await playersCollection.updateMany(
+      {},
+      {
+         $unset: { "maps.previous.$[].screenshot": "" }
+      }
+   );
+   console.log(result);
+}
+
 /**
  * @param {object} data
  * @param {boolean} data.submissionsOpen
@@ -60,6 +78,7 @@ export async function advancePools() {
  * @param {number} data.maxStars
  */
 export async function saveSubmissionSettings(data) {
+   await verify();
    const metaCollection = db.collection("requirements");
    const result = await metaCollection.updateOne(
       {},

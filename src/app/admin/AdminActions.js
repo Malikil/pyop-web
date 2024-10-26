@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Card, CardBody, CardTitle } from "react-bootstrap";
-import { advancePools } from "./functions";
+import { advancePools, clearScreenshots } from "./functions";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
@@ -11,22 +11,35 @@ export default function AdminActions() {
       <Card>
          <CardBody>
             <CardTitle>Actions</CardTitle>
-            <Button
-               variant={confirmAdvance ? "warning" : "primary"}
-               onClick={() => {
-                  if (confirmAdvance)
-                     toast
-                        .promise(advancePools, {
-                           pending: "Advancing mappools",
-                           error: "Failed to advance mappools",
-                           success: "Pools advanced"
-                        })
-                        .then(() => setConfirmAdvance(false));
-                  else setConfirmAdvance(true);
-               }}
-            >
-               Advance Mappools
-            </Button>
+            <div className="d-flex flex-column gap-3">
+               <Button
+                  onClick={() =>
+                     toast.promise(clearScreenshots, {
+                        pending: "Clearing old screenshots",
+                        error: "Failed to clear screenshots",
+                        success: "Screenshots cleared"
+                     })
+                  }
+               >
+                  Clean Screenshots
+               </Button>
+               <Button
+                  variant={confirmAdvance ? "warning" : "primary"}
+                  onClick={() => {
+                     if (confirmAdvance)
+                        toast
+                           .promise(advancePools, {
+                              pending: "Advancing mappools",
+                              error: "Failed to advance mappools",
+                              success: "Pools advanced"
+                           })
+                           .then(() => setConfirmAdvance(false));
+                     else setConfirmAdvance(true);
+                  }}
+               >
+                  Advance Mappools
+               </Button>
+            </div>
          </CardBody>
       </Card>
    );
