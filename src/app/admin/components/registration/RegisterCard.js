@@ -2,7 +2,7 @@
 
 import { Button, Card, CardBody, CardTitle } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { addPlayer } from "./functions";
+import { addPlayer } from "./actions";
 
 async function handleSubmit(formData) {
    const data = Object.fromEntries(formData);

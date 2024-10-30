@@ -47,6 +47,10 @@ export default function TournamentFormat() {
                will be announced there
             </li>
             <li>Register by posting to the #register channel in the discord server</li>
+            <li>
+               Once pool submissions are closed, no further changes can be made. Tournament staff
+               will not chase after you to complete your pools.
+            </li>
          </ul>
       </div>
    );

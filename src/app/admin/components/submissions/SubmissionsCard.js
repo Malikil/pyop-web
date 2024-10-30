@@ -3,7 +3,7 @@
 import useSubmissionRequirements from "@/hooks/useSubmissionRequirements";
 import { useEffect, useState } from "react";
 import { Button, Card, CardBody, CardTitle } from "react-bootstrap";
-import { saveSubmissionSettings } from "./functions";
+import { saveSubmissionSettings } from "./actions";
 import { toast } from "react-toastify";
 
 async function handleSubmit(formData) {

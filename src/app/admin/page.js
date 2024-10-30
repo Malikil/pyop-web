@@ -1,9 +1,9 @@
 import { auth } from "@/auth";
 import db from "../api/db/connection";
 import { redirect } from "next/navigation";
-import RegisterCard from "./RegisterCard";
-import SubmissionsCard from "./SubmissionsCard";
-import AdminActions from "./AdminActions";
+import RegisterCard from "./components/registration/RegisterCard";
+import SubmissionsCard from "./components/submissions/SubmissionsCard";
+import AdminActions from "./components/actions/AdminActions";
 
 export default async function Admin() {
    const session = await auth();

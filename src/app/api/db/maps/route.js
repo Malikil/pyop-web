@@ -80,6 +80,7 @@ export const POST = async req => {
          artist: beatmap.beatmapset.artist_unicode,
          title: beatmap.beatmapset.title_unicode,
          version: beatmap.version,
+         mapper: beatmap.beatmapset.creator,
          length: beatmap.total_length,
          drain: beatmap.hit_length,
          bpm: beatmap.bpm,

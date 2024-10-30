@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Card, CardBody, CardTitle } from "react-bootstrap";
-import { advancePools, clearScreenshots } from "./functions";
+import { advancePools, clearScreenshots, exportPools } from "./actions";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
@@ -22,6 +22,17 @@ export default function AdminActions() {
                   }
                >
                   Clean Screenshots
+               </Button>
+               <Button
+                  onClick={() =>
+                     toast.promise(exportPools, {
+                        pending: "Exporting mappools",
+                        error: "Failed to export mappools",
+                        success: "Export completed"
+                     })
+                  }
+               >
+                  Export Mappools
                </Button>
                <Button
                   variant={confirmAdvance ? "warning" : "primary"}
