@@ -97,7 +97,7 @@ export default function MapCard(props) {
    }, [props.beatmap, reqs]);
 
    return (
-      <Card className={errorState.style}>
+      <Card className={`${styles.mapcard} ${errorState.style}`}>
          <CardBody className="d-flex flex-column">
             <CardImg
                src={`https://assets.ppy.sh/beatmaps/${props.beatmap.setid}/covers/cover.jpg`}

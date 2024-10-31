@@ -1,6 +1,7 @@
 import { DashCircle } from "react-bootstrap-icons";
 import MapCard from "./MapCard";
 import { Card, CardBody, CardImg, CardTitle, Col, Row } from "react-bootstrap";
+import styles from "./mappool.module.css";
 
 /**
  * @param {object} props
@@ -17,7 +18,7 @@ export default function ModPool(props) {
    return (
       <div>
          <h2>{props.mod}</h2>
-         <div className="d-flex gap-2 flex-wrap flex-md-nowrap">
+         <div className="d-flex gap-2 flex-wrap">
             {props.maps.map(m => (
                <MapCard
                   beatmap={m}
@@ -27,7 +28,7 @@ export default function ModPool(props) {
                />
             ))}
             {Array.from({ length: (props.minCount || 0) - props.maps.length }).map((_, i) => (
-               <Card key={-i}>
+               <Card className={styles.mapcard} key={-i}>
                   <CardBody className="d-flex flex-column">
                      <CardImg
                         src="/placeholder_cover.png"

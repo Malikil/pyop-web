@@ -7,7 +7,7 @@ import NavbarItems from "./NavbarItems";
 export default function Navbar() {
    return (
       <div className="sticky-top w-100 border-bottom bg-body" tabIndex={-1}>
-         <nav className="navbar navbar-expand">
+         <nav className="navbar navbar-expand-sm">
             <Container className="d-flex gap-2 align-items-center position-relative">
                <Link className="navbar-brand" href="/">
                   <Image
