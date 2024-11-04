@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
       <html lang="en" data-bs-theme="dark">
          <body className={inter.className}>
             <Navbar />
-            <div className="container py-3" tabIndex={-1} role="main">
+            <div className="container py-2" tabIndex={-1} role="main">
                {children}
             </div>
             <BootstrapClient />
