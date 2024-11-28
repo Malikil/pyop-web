@@ -1,7 +1,6 @@
 "use client";
 
 import { Button, Container, FormControl, FormLabel, Modal, Spinner } from "react-bootstrap";
-import AddMapButton from "./addmap";
 import { ModsEnum } from "osu-web.js";
 import usePlayer from "@/hooks/usePlayer";
 import { useRouter } from "next/navigation";
@@ -11,6 +10,7 @@ import MapList from "@/components/mappool/MapList";
 import { useSWRConfig } from "swr";
 import { toast } from "react-toastify";
 import { uploadScreenshot } from "./actions";
+import AddMapButton from "./AddMapButton";
 
 const compressImage = imgData =>
    new Promise((resolve, reject) => {

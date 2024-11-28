@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { auth, checkExpiry } from "@/auth";
 import db from "../api/db/connection";
 
 export async function uploadScreenshot(formData) {
@@ -44,4 +44,9 @@ export async function uploadScreenshot(formData) {
       return mapData;
    });
    return result.maps.current;
+}
+
+export async function checkTokenValid() {
+   const session = await auth();
+   return session && !checkExpiry(session.accessToken);
 }
