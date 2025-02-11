@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import RegisterCard from "./components/registration/RegisterCard";
 import SubmissionsCard from "./components/submissions/SubmissionsCard";
 import AdminActions from "./components/actions/AdminActions";
+import UserList from "./components/userlist/UserList";
 
 export default async function Admin() {
    const session = await auth();
@@ -14,10 +15,13 @@ export default async function Admin() {
    if (!user?.admin) redirect("/");
 
    return (
-      <div className="d-flex gap-3 flex-wrap my-3">
-         <SubmissionsCard />
-         <RegisterCard />
-         <AdminActions />
+      <div>
+         <div className="d-flex gap-3 flex-wrap my-3">
+            <SubmissionsCard />
+            <RegisterCard />
+            <AdminActions />
+         </div>
+         <UserList />
       </div>
    );
 }

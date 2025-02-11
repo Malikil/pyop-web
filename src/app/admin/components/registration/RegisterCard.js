@@ -3,6 +3,7 @@
 import { Button, Card, CardBody, CardTitle } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { addPlayer } from "./actions";
+import { revalidatePath } from "next/cache";
 
 async function handleSubmit(formData) {
    const data = Object.fromEntries(formData);

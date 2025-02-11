@@ -53,7 +53,7 @@ export async function exportPools() {
    const cursor = db.collection("players").aggregate([
       {
          $match: {
-            eliminated: { $exists: false }
+            $or: [{ eliminated: { $exists: false } }, { eliminated: false }]
          }
       },
       { $unwind: "$maps.current" },

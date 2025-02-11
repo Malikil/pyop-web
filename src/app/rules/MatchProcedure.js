@@ -17,10 +17,7 @@ export default function MatchProcedure() {
                Once all players are in the lobby, each player may select 1 warmup map of less than 4
                minutes
             </li>
-            <li>
-               After warmups both players will roll. Higher roll decided if they want first or
-               second pick
-            </li>
+            <li>After warmups both players will roll. Higher roll picks first</li>
             <li>NF and ScoreV2 will be used on all maps.</li>
             <li>
                Players pick maps from their opponent&apos;s pool

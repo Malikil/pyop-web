@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 import { ModsEnum } from "osu-web.js";
 import { useSWRConfig } from "swr";
 import { checkTokenValid } from "./actions";
-import MappoolNotify from "./MappoolNotify";
 
 export default function AddMapButton({ count }) {
    const { mutate } = useSWRConfig();

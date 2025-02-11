@@ -48,7 +48,7 @@ export default function NavbarItems() {
                <li>
                   <Link
                      className="dropdown-item"
-                     href="#"
+                     href="https://osu.ppy.sh/community/forums/topics/2039534"
                      target="_blank"
                      rel="noopener noreferrer"
                   >
