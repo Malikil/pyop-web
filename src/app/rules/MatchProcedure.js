@@ -40,7 +40,13 @@ export default function MatchProcedure() {
             <li>
                If both players are tied with one map left to play a tiebreaker map will be played
                <ul>
-                  <li>I&apos;ll come up with tiebreaker stuff later</li>
+                  <li>Each player will message the ref to ban one of the TB maps</li>
+                  <li>
+                     The remaining TB will be played, or if both players banned the same one the ref
+                     will !roll to determine which to use
+                  </li>
+                  <li>Tiebreakers are played with freemod, a mod isn&apos;t required</li>
+                  <li>EZ will be multiplied by 1.8x</li>
                </ul>
             </li>
          </ul>

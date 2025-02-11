@@ -45,7 +45,7 @@ export default function MappoolMaps() {
                If a map has less than 3 passes with the selected mods on the leaderboard, or no
                leaderboard at all, you <em>must</em> submit a screenshot showing a pass on that map
                <ul>
-                  <li>The accuracy of the submitted screenshot must be at least 75%</li>
+                  <li>The accuracy of the submitted screenshot must be at least 80%</li>
                   <li>Do not use NF for the pass screenshot</li>
                   <li>ScoreV2 is optional for pass screenshots</li>
                </ul>
@@ -58,8 +58,8 @@ export default function MappoolMaps() {
                      just being the same thing copied repeatedly, and notes being properly timed
                   </li>
                   <li>
-                     You may not pick pending or graveyard maps which you mapped yourself (Loved,
-                     etc are subject to regular conditions as above)
+                     You may not pick pending or graveyard maps mapped by a player or staff in the
+                     tournament (Loved etc are subject to regular conditions as above)
                   </li>
                   <li>Maps must have been submitted before the start of registrations</li>
                </ul>

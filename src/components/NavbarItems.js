@@ -28,7 +28,7 @@ export default function NavbarItems() {
                <li>
                   <Link
                      className="dropdown-item"
-                     href="https://challonge.com/pyop_revival"
+                     href="https://challonge.com/pyop_refresh"
                      target="_blank"
                      rel="noopener noreferrer"
                   >
