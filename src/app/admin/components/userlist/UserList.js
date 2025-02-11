@@ -15,6 +15,7 @@ export default async function UserList() {
                      <th></th>
                      <th className="text-center px-1">Osu ID</th>
                      <th className="px-1">Admin</th>
+                     <th className="px-1">Approver</th>
                      <th className="px-1">Referee</th>
                      <th className="px-1">Eliminated</th>
                   </tr>
