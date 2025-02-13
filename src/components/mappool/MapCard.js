@@ -61,8 +61,8 @@ export default function MapCard(props) {
          let err = false;
          let warn = false;
          if (
-            props.beatmap.drain < reqs.maps.drain.min - 10 ||
-            props.beatmap.drain > reqs.maps.drain.max + 10
+            props.beatmap.drain < reqs.maps.drain.min - reqs.maps.drain.buffer ||
+            props.beatmap.drain > reqs.maps.drain.max + reqs.maps.drain.buffer
          ) {
             oldState.drain = true;
             oldState.textStyle = "text-danger";

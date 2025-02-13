@@ -11,7 +11,11 @@ export default function PoolStats({ maps }) {
       (p, c) => ({
          drain: p.drain + c.drain,
          drainBuffer:
-            p.drainBuffer + ((c.drain < 60 && c.drain >= 50) || (c.drain > 315 && c.drain <= 325))
+            p.drainBuffer +
+            ((c.drain < data.maps.drain.min &&
+               c.drain >= data.maps.drain.min - data.maps.drain.buffer) ||
+               (c.drain > data.maps.drain.max &&
+                  c.drain <= data.maps.drain.max + data.maps.drain.buffer))
       }),
       {
          drain: 0,
