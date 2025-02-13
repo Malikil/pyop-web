@@ -20,7 +20,8 @@ export async function getApprovalMaplist() {
    const mapCursor = collection.aggregate([
       {
          $match: {
-            "maps.current.approval": "pending"
+            "maps.current.approval": "pending",
+            eliminated: { $ne: true }
          }
       },
       { $unwind: "$maps.current" },

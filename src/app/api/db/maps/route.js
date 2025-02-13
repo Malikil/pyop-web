@@ -77,8 +77,8 @@ export const POST = async req => {
       const dbBeatmap = {
          id: beatmap.id,
          setid: beatmap.beatmapset_id,
-         artist: beatmap.beatmapset.artist_unicode,
-         title: beatmap.beatmapset.title_unicode,
+         artist: beatmap.beatmapset.artist,
+         title: beatmap.beatmapset.title,
          version: beatmap.version,
          mapper: beatmap.beatmapset.creator,
          length: beatmap.total_length,
