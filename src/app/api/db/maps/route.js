@@ -86,6 +86,7 @@ export const POST = async req => {
          bpm: beatmap.bpm,
          cs: beatmap.cs,
          ar: beatmap.ar,
+         od: beatmap.accuracy,
          stars: beatmap.difficulty_rating,
          mods,
          approval

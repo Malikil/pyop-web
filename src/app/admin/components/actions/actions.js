@@ -67,7 +67,6 @@ export async function exportPools() {
             _id: false,
             player: "$osuid",
             mods: "$maps.current.mods",
-            mapper: "$maps.current.mapper",
             map: {
                $concat: [
                   "$maps.current.artist",
@@ -79,8 +78,12 @@ export async function exportPools() {
                ]
             },
             stars: { $round: ["$maps.current.stars", 2] },
-            drain: "$maps.current.drain",
             bpm: "$maps.current.bpm",
+            drain: "$maps.current.drain",
+            cs: "$maps.current.cs",
+            ar: { $round: ["$maps.current.ar", 1] },
+            od: "$maps.current.od",
+            mapper: "$maps.current.mapper",
             id: "$maps.current.id"
          }
       },
@@ -93,6 +96,7 @@ export async function exportPools() {
    ]);
    const rows = cursor.map(doc => ({
       ...doc,
+      player: `=VLOOKUP(${doc.player},PlayerList!A1:B,2,FALSE)`,
       mods: getEnumMods(doc.mods).join("") || "NM",
       drain: convertTime(doc.drain),
       map: `=HYPERLINK("${buildUrl.beatmap(doc.id)}","${doc.map}")`
@@ -100,7 +104,19 @@ export async function exportPools() {
    await googleSheet.loadInfo();
    const exportSheet = await googleSheet.addSheet({
       title: `Export ${Date.now()}`,
-      headerValues: ["player", "mods", "mapper", "map", "stars", "drain", "bpm", "id"]
+      headerValues: [
+         "player",
+         "mods",
+         "map",
+         "stars",
+         "bpm",
+         "drain",
+         "cs",
+         "ar",
+         "od",
+         "mapper",
+         "id"
+      ]
    });
    const rowResult = await exportSheet.addRows(await rows.toArray());
    console.log(rowResult[0]);
