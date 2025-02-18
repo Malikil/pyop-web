@@ -148,7 +148,7 @@ export default function MapCard(props) {
                   <Col>{parseFloat(props.beatmap.ar.toFixed(2))}</Col>
                </Row>
             </Container>
-            <div className="mt-auto d-flex">
+            <div className="mt-auto d-flex flex-wrap">
                <CardLink
                   href={`https://osu.ppy.sh/beatmapsets/${props.beatmap.setid}#osu/${props.beatmap.id}`}
                   target="_blank"

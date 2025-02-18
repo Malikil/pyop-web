@@ -4,7 +4,7 @@ import UserRow from "./UserRow";
 
 export default async function UserList() {
    const playersCollection = db.collection("players");
-   const users = playersCollection.find({}, { projection: { _id: 0 } });
+   const users = playersCollection.find({}, { projection: { _id: 0, maps: 0 } });
    return (
       <Card>
          <CardBody>

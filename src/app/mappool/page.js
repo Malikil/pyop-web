@@ -24,8 +24,8 @@ const compressImage = imgData =>
          const originalHeight = img.height;
          console.log(originalWidth, originalHeight);
 
-         const baseWidth = 480;
-         const baseHeight = 270;
+         const baseWidth = 900;
+         const baseHeight = 500;
          const canvasWidth = Math.min(
             baseWidth,
             ((originalWidth * baseHeight) / originalHeight) | 0
