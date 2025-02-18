@@ -121,3 +121,23 @@ export async function exportPools() {
    const rowResult = await exportSheet.addRows(await rows.toArray());
    console.log(rowResult[0]);
 }
+
+export async function fetchUsernames() {
+   await verify();
+   const playersCollection = db.collection("players");
+   const playerList = playersCollection.find();
+   const updates = [];
+   for await (const player of playerList) {
+   }
+
+   playersCollection.bulkWrite([
+      {
+         updateOne: {
+            filter: { osuid: "" },
+            update: {
+               $set: { osuname: "" }
+            }
+         }
+      }
+   ]);
+}

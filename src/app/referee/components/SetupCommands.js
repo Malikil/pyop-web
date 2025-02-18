@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardBody, CardHeader, Row, Col, FormControl } from "react-bootstrap";
+import { copyTextE } from "./copytext";
 
 export default function SetupCommands() {
    return (
@@ -15,7 +16,7 @@ export default function SetupCommands() {
                      value="!mp make "
                      readOnly
                      role="button"
-                     onClick={e => navigator.clipboard.writeText(e.target.value)}
+                     onClick={copyTextE}
                   />
                </Col>
             </Row>
