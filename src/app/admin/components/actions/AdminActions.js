@@ -1,12 +1,13 @@
 "use client";
 
 import { Button, Card, CardBody, CardTitle } from "react-bootstrap";
-import { advancePools, clearScreenshots, exportPools } from "./actions";
+import { advancePools, clearScreenshots, exportPools, fetchUsernames } from "./actions";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
 export default function AdminActions() {
    const [confirmAdvance, setConfirmAdvance] = useState(false);
+   const [confirmFetchUsernames, setConfirmFetchUsernames] = useState(false);
    return (
       <Card>
          <CardBody>
@@ -50,7 +51,22 @@ export default function AdminActions() {
                >
                   Advance Mappools
                </Button>
-               <Button onClick={() => {}}>Fetch Usernames</Button>
+               <Button
+                  variant={confirmFetchUsernames ? "warning" : "primary"}
+                  onClick={() => {
+                     if (confirmFetchUsernames)
+                        toast
+                           .promise(fetchUsernames, {
+                              pending: "Fetching usernames",
+                              error: "Failed to fetch usernames",
+                              success: "Fetched usernames"
+                           })
+                           .then(() => setConfirmFetchUsernames(false));
+                     else setConfirmFetchUsernames(true);
+                  }}
+               >
+                  Fetch Usernames
+               </Button>
             </div>
          </CardBody>
       </Card>

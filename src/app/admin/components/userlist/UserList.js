@@ -5,10 +5,11 @@ import UserRow from "./UserRow";
 export default async function UserList() {
    const playersCollection = db.collection("players");
    const users = playersCollection.find({}, { projection: { _id: 0, maps: 0 } });
+   const userlist = await users.map(user => <UserRow user={user} key={user.osuid} />).toArray();
    return (
       <Card>
          <CardBody>
-            <CardTitle>Users</CardTitle>
+            <CardTitle>Users ({userlist.length})</CardTitle>
             <table>
                <thead>
                   <tr>
@@ -20,9 +21,7 @@ export default async function UserList() {
                      <th className="px-1">Eliminated</th>
                   </tr>
                </thead>
-               <tbody>
-                  {await users.map(user => <UserRow user={user} key={user.osuid} />).toArray()}
-               </tbody>
+               <tbody>{userlist}</tbody>
             </table>
          </CardBody>
       </Card>

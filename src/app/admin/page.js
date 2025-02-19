@@ -1,10 +1,11 @@
-import { auth } from "@/auth";
+import { auth, checkExpiry } from "@/auth";
 import db from "../api/db/connection";
 import { redirect } from "next/navigation";
 import RegisterCard from "./components/registration/RegisterCard";
 import SubmissionsCard from "./components/submissions/SubmissionsCard";
 import AdminActions from "./components/actions/AdminActions";
 import UserList from "./components/userlist/UserList";
+import AdminNotify from "./admin-notify/AdminNotify";
 
 export default async function Admin() {
    const session = await auth();
@@ -22,6 +23,7 @@ export default async function Admin() {
             <AdminActions />
          </div>
          <UserList />
+         {checkExpiry(session.accessToken) && <AdminNotify />}
       </div>
    );
 }

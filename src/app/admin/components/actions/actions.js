@@ -5,7 +5,7 @@ import { verify } from "../../functions";
 import db from "@/app/api/db/connection";
 import { JWT } from "google-auth-library";
 import { GoogleSpreadsheet } from "google-spreadsheet";
-import { buildUrl, getEnumMods } from "osu-web.js";
+import { buildUrl, Client, getEnumMods } from "osu-web.js";
 
 const SHEETS_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
 const jwt = new JWT({
@@ -123,21 +123,29 @@ export async function exportPools() {
 }
 
 export async function fetchUsernames() {
-   await verify();
+   const session = await verify();
+   const osu = new Client(session.accessToken);
    const playersCollection = db.collection("players");
-   const playerList = playersCollection.find();
+   const playerList = await playersCollection
+      .find({ eliminated: { $ne: true } }, { projection: { _id: 0, osuid: 1, osuname: 1 } })
+      .toArray();
    const updates = [];
-   for await (const player of playerList) {
+   for (let i = 0; i < playerList.length; i += 50) {
+      const batch = playerList.slice(i, i + 50);
+      console.log(`Fetching players ${i + 1} to ${i + batch.length}`);
+      const users = await osu.users.getUsers({ query: { ids: batch.map(u => u.osuid) } });
+      users.forEach(user => {
+         const old = batch.find(u => u.osuid === user.id);
+         if (old.osuname !== user.username)
+            updates.push({
+               updateOne: {
+                  filter: { osuid: user.id },
+                  update: { $set: { osuname: user.username } }
+               }
+            });
+      });
    }
 
-   playersCollection.bulkWrite([
-      {
-         updateOne: {
-            filter: { osuid: "" },
-            update: {
-               $set: { osuname: "" }
-            }
-         }
-      }
-   ]);
+   const result = await playersCollection.bulkWrite(updates);
+   console.log(result);
 }

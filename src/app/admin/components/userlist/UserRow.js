@@ -21,7 +21,7 @@ export default function UserRow({ user }) {
                <Image src={buildUrl.userAvatar(user.osuid)} alt="Avatar" width={32} height={32} />
             )}
          </td>
-         <td className="px-2">{user.osuid}</td>
+         <td className="px-2">{user.osuname || user.osuid}</td>
          <td className="px-2">
             <div className="form-check form-switch">
                <input
