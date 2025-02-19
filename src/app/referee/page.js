@@ -1,24 +1,35 @@
-import { auth } from "@/auth";
+"use client";
+
 import MatchInfo from "./components/MatchInfo";
 import SetupCommands from "./components/SetupCommands";
-import { redirect } from "next/navigation";
-import db from "../api/db/connection";
+import { useRouter } from "next/navigation";
+import useSWR from "swr";
+import { fetchPlayerList } from "./actions";
+import { Spinner } from "react-bootstrap";
+import PoolSelect from "./components/PoolSelect";
+import { useState } from "react";
 
-export default async function Referee() {
-   const session = await auth();
-   if (!session) redirect("/");
+export default function Referee() {
+   const { data, error, isLoading } = useSWR("refereeMaplist", fetchPlayerList);
+   const router = useRouter();
 
-   const playersCollection = db.collection("players");
-   const playerList = await playersCollection
-      .find({}, { projection: { _id: 0, maps: 0 } })
-      .toArray();
-   const user = playerList.find(p => p.osuid === session.user.id);
-   if (!user?.referee && !user?.admin) redirect("/");
+   const [player1, setPlayer1] = useState(Object.keys(data)[0]);
+   const [player2, setPlayer2] = useState(Object.keys(data)[0]);
+
+   if (isLoading) return <Spinner className="m-4" />;
+   if (error) return router.push("/");
 
    return (
       <div className="d-flex flex-column gap-2">
          <div className="d-flex gap-2">
-            <SetupCommands />
+            <SetupCommands p1={{ name: player1 }} p2={{ name: player2 }} />
+            <PoolSelect
+               players={data}
+               p1={player1}
+               p2={player2}
+               p1Updated={e => setPlayer1(e.target.value)}
+               p2Updated={e => setPlayer2(e.target.value)}
+            />
          </div>
          <MatchInfo />
       </div>

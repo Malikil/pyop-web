@@ -24,6 +24,7 @@ export async function advancePools() {
          $set: {
             maps: {
                current: [],
+               locked: "$maps.current",
                previous: {
                   $concatArrays: ["$maps.previous", "$maps.current"]
                }
