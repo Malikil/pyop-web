@@ -7,14 +7,21 @@ import useSWR from "swr";
 import { fetchPlayerList } from "./actions";
 import { Spinner } from "react-bootstrap";
 import PoolSelect from "./components/PoolSelect";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Referee() {
    const { data, error, isLoading } = useSWR("refereeMaplist", fetchPlayerList);
    const router = useRouter();
 
-   const [player1, setPlayer1] = useState(Object.keys(data)[0]);
-   const [player2, setPlayer2] = useState(Object.keys(data)[0]);
+   const [player1, setPlayer1] = useState();
+   const [player2, setPlayer2] = useState();
+
+   useEffect(() => {
+      if ((player1 && player2) || error || isLoading) return;
+      const p0 = Object.keys(data)[0];
+      setPlayer1(p0);
+      setPlayer2(p0);
+   }, [data, error, isLoading, player1, player2]);
 
    if (isLoading) return <Spinner className="m-4" />;
    if (error) return router.push("/");
