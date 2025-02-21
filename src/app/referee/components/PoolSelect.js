@@ -3,16 +3,17 @@
 import { Card, CardBody, CardHeader, Row, Col, FormSelect, Table } from "react-bootstrap";
 import { getEnumMods } from "osu-web.js";
 import copyText from "./copytext";
+import { useContext } from "react";
+import MatchContext from "../matchContext";
 
 function PoolRow({ beatmap }) {
    const mods = getEnumMods(beatmap.mods);
-   if (mods.length < 1) mods.push("NM");
    return (
       <tr
          role="button"
          onClick={() => copyText(`!mp map ${beatmap.id}\n!mp mods NF ${mods.join(" ")}`)}
       >
-         <td>{mods.join("")}</td>
+         <td>{mods.join("") || "NM"}</td>
          <td>
             {beatmap.artist} - {beatmap.title} [{beatmap.version}]
          </td>
@@ -29,14 +30,27 @@ function PoolRow({ beatmap }) {
  * @param {import("react").ChangeEventHandler<HTMLSelectElement>} props.p1Updated
  * @param {import("react").ChangeEventHandler<HTMLSelectElement>} props.p2Updated
  */
-export default function PoolSelect({ players, p1, p1Updated, p2, p2Updated }) {
+export default function PoolSelect({ players }) {
+   const { context, setContext } = useContext(MatchContext);
+
    return (
       <Card>
          <CardHeader>Map Pools</CardHeader>
          <CardBody>
             <Row>
                <Col>
-                  <FormSelect value={p1} onChange={p1Updated}>
+                  <FormSelect
+                     value={context.player1.name}
+                     onChange={e =>
+                        setContext(v => ({
+                           ...v,
+                           player1: {
+                              ...v.player1,
+                              name: e.target.value
+                           }
+                        }))
+                     }
+                  >
                      {Object.keys(players).map(p => (
                         <option value={p} key={p}>
                            {p}
@@ -45,7 +59,18 @@ export default function PoolSelect({ players, p1, p1Updated, p2, p2Updated }) {
                   </FormSelect>
                </Col>
                <Col>
-                  <FormSelect value={p2} onChange={p2Updated}>
+                  <FormSelect
+                     value={context.player2.name}
+                     onChange={e =>
+                        setContext(v => ({
+                           ...v,
+                           player2: {
+                              ...v.player2,
+                              name: e.target.value
+                           }
+                        }))
+                     }
+                  >
                      {Object.keys(players).map(p => (
                         <option value={p} key={p}>
                            {p}
@@ -64,18 +89,18 @@ export default function PoolSelect({ players, p1, p1Updated, p2, p2Updated }) {
             </Row>
             <Row>
                <Col>
-                  <Table className="table-hover">
+                  <Table className="table-sm table-hover">
                      <tbody>
-                        {players[p1]?.map(beatmap => (
+                        {players[context.player1.name]?.map(beatmap => (
                            <PoolRow beatmap={beatmap} key={beatmap.id} />
                         ))}
                      </tbody>
                   </Table>
                </Col>
                <Col>
-                  <Table className="table-hover">
+                  <Table className="table-sm table-hover">
                      <tbody>
-                        {players[p2]?.map(beatmap => (
+                        {players[context.player2.name]?.map(beatmap => (
                            <PoolRow beatmap={beatmap} key={beatmap.id} />
                         ))}
                      </tbody>

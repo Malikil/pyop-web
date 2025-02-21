@@ -19,7 +19,10 @@ export async function fetchPlayerList() {
    const playerList = Object.fromEntries(
       await playersCollection
          .find(
-            { eliminated: { $ne: true } },
+            {
+               eliminated: { $ne: true },
+               "maps.locked.0": { $exists: true }
+            },
             {
                projection: {
                   _id: 0,
