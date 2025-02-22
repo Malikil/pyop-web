@@ -8,7 +8,7 @@ import { fetchPlayerList } from "./actions";
 import { Spinner } from "react-bootstrap";
 import PoolSelect from "./components/PoolSelect";
 import { useEffect, useState } from "react";
-import MatchContext from "./matchContext";
+import MatchContext from "./MatchContext";
 
 export default function Referee() {
    const { data, error, isLoading } = useSWR("refereeMaplist", fetchPlayerList);
@@ -20,7 +20,8 @@ export default function Referee() {
       },
       player2: {
          score: 0
-      }
+      },
+      maps: []
    });
 
    useEffect(() => {

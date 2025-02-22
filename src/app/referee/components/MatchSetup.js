@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 import { copyTextE } from "./copytext";
 import { useContext, useEffect, useState } from "react";
-import MatchContext from "../matchContext";
+import MatchContext from "../MatchContext";
 
 export default function MatchSetup() {
    const { context, setContext } = useContext(MatchContext);

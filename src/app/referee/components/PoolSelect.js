@@ -4,7 +4,7 @@ import { Card, CardBody, CardHeader, Row, Col, FormSelect, Table } from "react-b
 import { getEnumMods } from "osu-web.js";
 import copyText from "./copytext";
 import { useContext } from "react";
-import MatchContext from "../matchContext";
+import MatchContext from "../MatchContext";
 
 function PoolRow({ beatmap }) {
    const mods = getEnumMods(beatmap.mods);

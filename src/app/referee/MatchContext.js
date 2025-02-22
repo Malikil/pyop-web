@@ -11,7 +11,11 @@ const MatchContext = createContext({
          score: 0
       },
       nextPick: "",
-      firstPick: 0
+      firstPick: 0,
+      maps: [{
+         map: 0,
+         winner: ''
+      }]
    },
    setContext: () => {}
 });
