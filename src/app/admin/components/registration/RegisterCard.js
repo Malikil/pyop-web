@@ -25,9 +25,12 @@ async function handleSubmit(formData) {
 export default function RegisterCard() {
    return (
       <Card>
-         <CardBody>
+         <CardBody className="d-flex flex-column">
             <CardTitle>Registration</CardTitle>
-            <form className="d-flex flex-column gap-3" action={formData => handleSubmit(formData)}>
+            <form
+               className="d-flex flex-column flex-fill gap-3"
+               action={formData => handleSubmit(formData)}
+            >
                <div>
                   <label htmlFor="osuid" className="form-label">
                      osu! ID
@@ -40,7 +43,9 @@ export default function RegisterCard() {
                   </label>
                   <input id="discordid" name="discordId" className="form-control" type="text" />
                </div>
-               <Button type="submit">Register</Button>
+               <Button className="mt-auto" type="submit">
+                  Register
+               </Button>
             </form>
          </CardBody>
       </Card>
