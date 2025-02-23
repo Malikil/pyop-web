@@ -1,9 +1,14 @@
 import { useContext } from "react";
-import { Card, CardBody, CardHeader, FormSelect, Table } from "react-bootstrap";
+import { Card, CardBody, CardHeader, FormControl, FormSelect, Table } from "react-bootstrap";
 import MatchContext from "../MatchContext";
 import useSWR from "swr";
+import copyText from "./copytext";
+import { getEnumMods } from "osu-web.js";
 
 function SongRow({ picker, maps, song, songChanged, players, winner, winnerChanged }) {
+   const selectedMap = maps.find(m => m.id == song); // == instead of parseInt
+   const mods = getEnumMods(selectedMap?.mods || 0).join(" ");
+   if (selectedMap) console.log(mods);
    return (
       <tr>
          <td>{picker}</td>
@@ -12,7 +17,7 @@ function SongRow({ picker, maps, song, songChanged, players, winner, winnerChang
                <option />
                {maps.map(m => (
                   <option value={m.id} key={m.id}>
-                     {m.artist} - {m.title} [{m.version}]
+                     {getEnumMods(m.mods).join("") || "NM"} | {m.artist} - {m.title} [{m.version}]
                   </option>
                ))}
             </FormSelect>
@@ -26,6 +31,16 @@ function SongRow({ picker, maps, song, songChanged, players, winner, winnerChang
                   </option>
                ))}
             </FormSelect>
+         </td>
+         <td>
+            <FormControl type="button" value={song} onClick={() => copyText(`!mp map ${song}`)} />
+         </td>
+         <td>
+            <FormControl
+               type="button"
+               value={mods || "NM"}
+               onClick={() => copyText(`!mp mods NF ${mods}`)}
+            />
          </td>
       </tr>
    );
@@ -48,6 +63,8 @@ export default function MatchInfo() {
                         <th>Picked By</th>
                         <th>Song</th>
                         <th>Winner</th>
+                        <th>!mp map</th>
+                        <th>!mp mods</th>
                      </tr>
                   </thead>
                   <tbody>

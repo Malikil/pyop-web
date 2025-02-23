@@ -19,10 +19,12 @@ export default function Referee() {
 
    const [matchContextValue, setMatchContextValue] = useState({
       player1: {
-         score: 0
+         score: 0,
+         roll: ""
       },
       player2: {
-         score: 0
+         score: 0,
+         roll: ""
       },
       maps: Array.from({ length: BESTOF }).map(() => ({ map: "", winner: "" })),
       bestOf: BESTOF
