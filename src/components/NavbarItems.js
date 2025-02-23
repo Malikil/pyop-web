@@ -18,7 +18,7 @@ export default function NavbarItems() {
                <li>
                   <Link
                      className="dropdown-item"
-                     href="https://docs.google.com/spreadsheets/d/1lBeu0BjLizwDexN9kdB0AJzlqRjLBf0uY0nw8-nr2Ro/edit?usp=sharing"
+                     href={process.env.MAIN_SPREADSHEET_LINK || '#'}
                      target="_blank"
                      rel="noopener noreferrer"
                   >
