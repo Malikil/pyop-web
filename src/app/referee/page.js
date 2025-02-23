@@ -9,6 +9,9 @@ import { Spinner } from "react-bootstrap";
 import PoolSelect from "./components/PoolSelect";
 import { useEffect, useState } from "react";
 import MatchContext from "./MatchContext";
+import MatchResult from "./components/MatchResult";
+
+const BESTOF = 7;
 
 export default function Referee() {
    const { data, error, isLoading } = useSWR("refereeMaplist", fetchPlayerList);
@@ -21,7 +24,8 @@ export default function Referee() {
       player2: {
          score: 0
       },
-      maps: []
+      maps: Array.from({ length: BESTOF }).map(() => ({ map: "", winner: "" })),
+      bestOf: BESTOF
    });
 
    useEffect(() => {
@@ -54,6 +58,7 @@ export default function Referee() {
                <PoolSelect players={data} />
             </div>
             <MatchInfo />
+            <MatchResult />
          </MatchContext.Provider>
       </div>
    );

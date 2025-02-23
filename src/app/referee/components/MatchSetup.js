@@ -11,20 +11,19 @@ import {
    FormLabel
 } from "react-bootstrap";
 import { copyTextE } from "./copytext";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import MatchContext from "../MatchContext";
 
 export default function MatchSetup() {
    const { context, setContext } = useContext(MatchContext);
-   const [p1Roll, setP1Roll] = useState("");
-   const [p2Roll, setP2Roll] = useState("");
-   useEffect(() => {
-      if (p1Roll && p2Roll)
-         setContext(v => ({
-            ...v,
-            firstPick: +(parseInt(p1Roll) > parseInt(p2Roll)) + 1
-         }));
-   }, [p1Roll, p2Roll]);
+
+   const nextPick = () => {
+      if (!context.player1.roll || !context.player2.roll) return "";
+      const firstPick = +(context.player1.roll < context.player2.roll);
+      const picked = context.maps.filter(m => m.map).length;
+      const nextVar = (firstPick + picked) % 2;
+      return context[`player${nextVar + 1}`].name;
+   };
 
    return (
       <Card>
@@ -70,7 +69,12 @@ export default function MatchSetup() {
                <Col>
                   <FormGroup>
                      <FormLabel>MP link</FormLabel>
-                     <FormControl type="text" placeholder="https://osu.ppy.sh/mp/12345" />
+                     <FormControl
+                        type="text"
+                        value={context.mp}
+                        onChange={e => setContext(v => ({ ...v, mp: e.target.value }))}
+                        placeholder="https://osu.ppy.sh/mp/12345"
+                     />
                   </FormGroup>
                </Col>
             </Row>
@@ -81,8 +85,16 @@ export default function MatchSetup() {
                      <FormControl
                         type="text"
                         placeholder="0"
-                        value={p1Roll}
-                        onChange={e => setP1Roll(e.target.value)}
+                        value={context.player1.roll}
+                        onChange={e =>
+                           setContext(v => ({
+                              ...v,
+                              player1: {
+                                 ...v.player1,
+                                 roll: parseInt(e.target.value)
+                              }
+                           }))
+                        }
                      />
                   </FormGroup>
                </Col>
@@ -92,8 +104,16 @@ export default function MatchSetup() {
                      <FormControl
                         type="text"
                         placeholder="0"
-                        value={p2Roll}
-                        onChange={e => setP2Roll(e.target.value)}
+                        value={context.player2.roll}
+                        onChange={e =>
+                           setContext(v => ({
+                              ...v,
+                              player2: {
+                                 ...v.player2,
+                                 roll: parseInt(e.target.value)
+                              }
+                           }))
+                        }
                      />
                   </FormGroup>
                </Col>
@@ -104,7 +124,9 @@ export default function MatchSetup() {
                      <FormLabel>After map</FormLabel>
                      <FormControl
                         type="button"
-                        value={`${context.player1.name} ${context.player1.score} - ${context.player2.score} ${context.player2.name} | Next pick: ${context.nextPick}`}
+                        value={`${context.player1.name} ${context.player1.score} - ${
+                           context.player2.score
+                        } ${context.player2.name} | Next pick: ${nextPick()}`}
                         onClick={copyTextE}
                      />
                   </FormGroup>

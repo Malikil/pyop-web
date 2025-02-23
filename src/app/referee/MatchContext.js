@@ -2,20 +2,23 @@ const { createContext } = require("react");
 
 const MatchContext = createContext({
    context: {
+      mp: '',
       player1: {
          name: "",
-         score: 0
+         score: 0,
+         roll: 0
       },
       player2: {
          name: "",
-         score: 0
+         score: 0,
+         roll: 0
       },
       nextPick: "",
-      firstPick: 0,
       maps: [{
          map: 0,
          winner: ''
-      }]
+      }],
+      bestOf: 7
    },
    setContext: () => {}
 });
