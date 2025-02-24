@@ -91,7 +91,7 @@ export default function MatchSetup() {
                               ...v,
                               player1: {
                                  ...v.player1,
-                                 roll: parseInt(e.target.value)
+                                 roll: parseInt(e.target.value) || ""
                               }
                            }))
                         }
@@ -110,7 +110,7 @@ export default function MatchSetup() {
                               ...v,
                               player2: {
                                  ...v.player2,
-                                 roll: parseInt(e.target.value)
+                                 roll: parseInt(e.target.value) || ""
                               }
                            }))
                         }
