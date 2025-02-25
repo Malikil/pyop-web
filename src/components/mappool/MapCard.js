@@ -73,7 +73,6 @@ export default function MapCard(props) {
          ) {
             oldState.drain = true;
             oldState.textStyle = "text-warning";
-            warn = true;
          } else oldState.drain = false;
 
          if (props.beatmap.length > reqs.maps.length.max) {
@@ -89,6 +88,10 @@ export default function MapCard(props) {
             err = true;
          } else oldState.stars = false;
 
+         // If the beatmap needs and is missing a screenshot, put the yellow border around it
+         if (props.beatmap.approval === "pending" && !props.beatmap.screenshot) warn = true;
+         else if (props.beatmap.approval === "rejected") err = true;
+         
          return {
             ...oldState,
             style: err ? styles.map_error : warn ? styles.map_warning : null

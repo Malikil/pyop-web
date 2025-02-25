@@ -29,10 +29,11 @@ export const POST = async req => {
 
       if (mods !== 0) {
          const attributes = await osuapi.beatmaps.getBeatmapAttributes(mapid, "osu", {
-            body: { mods: (mods | ModsEnum.EZ) ^ ModsEnum.EZ }
+            body: { mods }
          });
          // Get the map's star rating
          beatmap.difficulty_rating = attributes.star_rating;
+         if (mods & ModsEnum.EZ) beatmap.difficulty_rating += 0.5;
 
          // Do HR/EZ first because effective AR from DT/HT is applied after
          if (mods & ModsEnum.HR) {
