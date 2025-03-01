@@ -152,7 +152,7 @@ export default function MapCard(props) {
                   <Col>{parseFloat(props.beatmap.ar.toFixed(2))}</Col>
                </Row>
                {props.beatmap.rejection && (
-                  <Row className="mt-2">
+                  <Row className="my-2">
                      <Col>Rejection: {props.beatmap.rejection}</Col>
                   </Row>
                )}
