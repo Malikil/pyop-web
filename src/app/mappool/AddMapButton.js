@@ -48,7 +48,7 @@ export default function AddMapButton({ count }) {
 
    return (
       <div className="position-fixed bottom-0 end-0 m-3 rounded-circle p-2">
-         <div className="text-center">{count || 0} / 10</div>
+         {count !== -1 && <div className="text-center">{count || 0} / 10</div>}
          <Button
             aria-label="Add Map"
             ref={refs.setReference}
