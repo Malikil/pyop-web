@@ -15,6 +15,7 @@
  * @prop {number} stars
  * @prop {number} mods
  * @prop {'pending'|'approved'|'rejected'} approval
+ * @prop {string} [rejection]
  */
 
 import useSubmissionRequirements from "@/hooks/useSubmissionRequirements";
@@ -91,7 +92,7 @@ export default function MapCard(props) {
          // If the beatmap needs and is missing a screenshot, put the yellow border around it
          if (props.beatmap.approval === "pending" && !props.beatmap.screenshot) warn = true;
          else if (props.beatmap.approval === "rejected") err = true;
-         
+
          return {
             ...oldState,
             style: err ? styles.map_error : warn ? styles.map_warning : null
@@ -150,6 +151,11 @@ export default function MapCard(props) {
                   <Col>AR</Col>
                   <Col>{parseFloat(props.beatmap.ar.toFixed(2))}</Col>
                </Row>
+               {props.beatmap.rejection && (
+                  <Row className="mt-2">
+                     <Col>Rejection: {props.beatmap.rejection}</Col>
+                  </Row>
+               )}
             </Container>
             <div className="mt-auto d-flex flex-wrap">
                <CardLink

@@ -5,15 +5,19 @@ import { useRouter } from "next/navigation";
 import { getApprovalMaplist, updateApproval } from "./actions";
 import useSWR from "swr";
 import { ModsEnum } from "osu-web.js";
-import { Button, Modal, Spinner } from "react-bootstrap";
+import { Button, FormControl, FormLabel, Modal, Spinner } from "react-bootstrap";
 import { useState } from "react";
 
 export default function ApproverPage() {
    const { data, error, isLoading, mutate } = useSWR("approvalMaps", getApprovalMaplist);
    const router = useRouter();
 
+   const [rejectMessage, setRejectMessage] = useState("");
    const [screenshot, setScreenshot] = useState(null);
+   const [selectedMap, setSelectedMap] = useState(null);
    const [showModal, setShowModal] = useState(false);
+   const [showRejectModal, setShowRejectModal] = useState(false);
+   const [submitting, setSubmitting] = useState(false);
 
    if (isLoading) return <Spinner className="m-4" />;
    if (error) return router.push("/");
@@ -67,9 +71,9 @@ export default function ApproverPage() {
                {
                   title: "Reject",
                   action: async beatmap => {
-                     mutate(() => updateApproval(beatmap, "rejected"), {
-                        populateCache: popCache(beatmap, "rejected")
-                     });
+                     setSelectedMap(beatmap);
+                     setRejectMessage("");
+                     setShowRejectModal(true);
                   }
                },
                {
@@ -106,6 +110,38 @@ export default function ApproverPage() {
             </Modal.Body>
             <Modal.Footer>
                <Button onClick={() => setShowModal(false)}>Close</Button>
+            </Modal.Footer>
+         </Modal>
+         <Modal show={showRejectModal} onHide={() => setShowRejectModal(false)}>
+            <Modal.Header closeButton>
+               <Modal.Title>Rejection</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+               <form
+                  id="rejectForm"
+                  action={async () => {
+                     setSubmitting(true);
+                     await mutate(() => updateApproval(selectedMap, "rejected", rejectMessage), {
+                        populateCache: popCache(selectedMap, "rejected")
+                     });
+                     setSubmitting(false);
+                     setShowRejectModal(false);
+                  }}
+               >
+                  <FormLabel htmlFor="rejectMessage">Reject Message</FormLabel>
+                  <FormControl
+                     type="text"
+                     id="rejectMessage"
+                     value={rejectMessage}
+                     onChange={e => setRejectMessage(e.target.value)}
+                  />
+               </form>
+            </Modal.Body>
+            <Modal.Footer>
+               <Button type="submit" form="rejectForm" disabled={submitting}>
+                  Submit {submitting && <Spinner size="sm" />}
+               </Button>
+               <Button onClick={() => setShowRejectModal(false)}>Close</Button>
             </Modal.Footer>
          </Modal>
       </>

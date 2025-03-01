@@ -71,9 +71,14 @@ export async function getApprovalMaplist() {
    return maps;
 }
 
-export async function updateApproval(beatmap, status) {
+export async function updateApproval(beatmap, status, rejection) {
    const session = await auth();
    if (!(await checkApprover(session.user.id))) throw new Error("Not Authorized");
+
+   const $set = {
+      "maps.current.$.approval": status
+   };
+   if (rejection) $set["maps.current.$.rejection"] = rejection;
 
    const collection = db.collection("players");
    const result = await collection.updateMany(
@@ -85,11 +90,7 @@ export async function updateApproval(beatmap, status) {
             }
          }
       },
-      {
-         $set: {
-            "maps.current.$.approval": status
-         }
-      }
+      { $set }
    );
    console.log(result);
    return true;
