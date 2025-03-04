@@ -27,8 +27,10 @@ export default function Fillerpool() {
          /> */}
          <PoolStats />
          <AddMapButton
-            count={data.count}
-            max={data.max}
+            count={
+               data.nm.length + data.hd.length + data.hr.length + data.dt.length + data.other.length
+            }
+            max={data.required}
             addFunc={async (mapid, mods) => {
                const result = addAutofillMap(mapid, mods);
             }}

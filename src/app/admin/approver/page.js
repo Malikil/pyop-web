@@ -8,6 +8,7 @@ import { ModsEnum } from "osu-web.js";
 import { Button, FormControl, FormLabel, Modal, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import Link from "next/link";
+import { ArrowRight } from "react-bootstrap-icons";
 
 export default function ApproverPage() {
    const { data, error, isLoading, mutate } = useSWR("approvalMaps", getApprovalMaplist);
@@ -59,7 +60,10 @@ export default function ApproverPage() {
    return (
       <div className="position-relative">
          <Link href="/admin/approver/autofill">
-            <Button className="position-absolute top-0 end-0">Autofill</Button>
+            <div className="fs-5 nav-link position-absolute top-0 end-0 d-flex gap-1 align-items-center">
+               <span>Autofill</span>
+               <ArrowRight />
+            </div>
          </Link>
          <MapList
             maps={data}

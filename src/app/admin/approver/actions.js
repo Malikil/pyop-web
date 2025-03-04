@@ -5,7 +5,7 @@ import { auth } from "@/auth";
 import { ModsEnum } from "osu-web.js";
 import { cache } from "react";
 
-const checkApprover = cache(async osuid => {
+export const checkApprover = cache(async osuid => {
    const collection = db.collection("players");
    const player = await collection.findOne({ osuid });
    return player && (player.admin || player.approver);
