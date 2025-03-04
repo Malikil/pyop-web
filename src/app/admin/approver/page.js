@@ -66,7 +66,8 @@ export default function ApproverPage() {
                      mutate(() => updateApproval(beatmap, "approved"), {
                         populateCache: popCache(beatmap, "approved")
                      });
-                  }
+                  },
+                  confirm: true
                },
                {
                   title: "Reject",

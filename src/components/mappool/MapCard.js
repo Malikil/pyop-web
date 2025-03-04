@@ -44,9 +44,11 @@ import { getEnumMods } from "osu-web.js";
  * @param {string} props.mapActions.title
  * @param {function} props.mapActions.action
  * @param {function} props.mapActions.condition
+ * @param {boolean} [props.mapActions.confirm]
  */
 export default function MapCard(props) {
    const { data: reqs, isLoading } = useSubmissionRequirements();
+   const [actionsConfirmation, setActionsConfirmation] = useState({});
    // Check map status
    const [errorState, setErrorState] = useState({
       drain: false,
@@ -171,8 +173,14 @@ export default function MapCard(props) {
                         <CardLink
                            key={fn.title}
                            role="button"
-                           onClick={() => fn.action(props.beatmap)}
+                           onClick={() => {
+                              if (!fn.confirm || actionsConfirmation[fn.title]) fn.action(props.beatmap);
+                              else setActionsConfirmation(ac => ({ ...ac, [fn.title]: true }));
+                           }}
                         >
+                           {actionsConfirmation[fn.title] && (
+                              <ExclamationCircle className="text-warning" />
+                           )}
                            {fn.title}
                         </CardLink>
                      ) : null
