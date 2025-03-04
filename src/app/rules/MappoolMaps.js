@@ -54,8 +54,9 @@ export default function MappoolMaps() {
                Unranked maps are allowed, as long as they&apos;re not too unreasonable
                <ul>
                   <li>
-                     This includes things like 2B, notes outside the playfield, the whole map not
-                     just being the same thing copied repeatedly, and notes being properly timed
+                     This means things like 2B, notes outside the playfield, the whole map just
+                     being the same thing copied repeatedly, improperly timed notes, etc will be
+                     rejected
                   </li>
                   <li>
                      You may not pick pending or graveyard maps mapped by a player or staff in the
