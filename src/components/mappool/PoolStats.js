@@ -7,7 +7,7 @@ export default function PoolStats({ maps }) {
    const { data, isLoading } = useSubmissionRequirements();
    if (isLoading) return null;
 
-   const agg = maps.reduce(
+   const agg = (maps || []).reduce(
       (p, c) => ({
          drain: p.drain + c.drain,
          drainBuffer:
@@ -33,18 +33,22 @@ export default function PoolStats({ maps }) {
             Drain Time: {convertTime(data.maps.drain.min)} - {convertTime(data.maps.drain.max)}
          </div>
          <div>Song Length: &lt;{convertTime(data.maps.length.max)} (incl. DT/HT)</div>
-         <div>3 scoreboard passes or screenshot</div>
-         <hr />
-         <h5>Pool Requirements:</h5>
-         <div className="d-flex align-items-center gap-1">
-            <div>
-               Total Time: {convertTime(data.pool.drain.min)} - {convertTime(data.pool.drain.max)} (
-               {convertTime(agg.drain)})
-            </div>
-            {drainErr && <ExclamationCircle className="text-danger" />}
-         </div>
-         {agg.drainBuffer > 2 && (
-            <div className="text-danger">Only 2 maps may be outside drain limits</div>
+         {maps && (
+            <>
+               <div>3 scoreboard passes or screenshot</div>
+               <hr />
+               <h5>Pool Requirements:</h5>
+               <div className="d-flex align-items-center gap-1">
+                  <div>
+                     Total Time: {convertTime(data.pool.drain.min)} -{" "}
+                     {convertTime(data.pool.drain.max)} ({convertTime(agg.drain)})
+                  </div>
+                  {drainErr && <ExclamationCircle className="text-danger" />}
+               </div>
+               {agg.drainBuffer > 2 && (
+                  <div className="text-danger">Only 2 maps may be outside drain limits</div>
+               )}
+            </>
          )}
       </div>
    );

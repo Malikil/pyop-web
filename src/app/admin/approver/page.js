@@ -7,6 +7,7 @@ import useSWR from "swr";
 import { ModsEnum } from "osu-web.js";
 import { Button, FormControl, FormLabel, Modal, Spinner } from "react-bootstrap";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ApproverPage() {
    const { data, error, isLoading, mutate } = useSWR("approvalMaps", getApprovalMaplist);
@@ -56,7 +57,10 @@ export default function ApproverPage() {
    };
 
    return (
-      <>
+      <div className="position-relative">
+         <Link href="/admin/approver/autofill">
+            <Button className="position-absolute top-0 end-0">Autofill</Button>
+         </Link>
          <MapList
             maps={data}
             mapActions={[
@@ -144,6 +148,6 @@ export default function ApproverPage() {
                <Button onClick={() => setShowRejectModal(false)}>Close</Button>
             </Modal.Footer>
          </Modal>
-      </>
+      </div>
    );
 }

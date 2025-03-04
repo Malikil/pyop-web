@@ -12,11 +12,9 @@ import {
 } from "@floating-ui/react";
 import { useEffect, useState } from "react";
 import { ModsEnum } from "osu-web.js";
-import { useSWRConfig } from "swr";
 import { checkTokenValid } from "./actions";
 
-export default function AddMapButton({ count }) {
-   const { mutate } = useSWRConfig();
+export default function AddMapButton({ count, addFunc, max }) {
    // Handle add button popup box
    const [isOpen, setIsOpen] = useState(false);
    const { refs, floatingStyles, context } = useFloating({
@@ -35,8 +33,8 @@ export default function AddMapButton({ count }) {
    const [mapLink, setMapLink] = useState("");
    const [mods, setMods] = useState(0);
    useEffect(() => {
-      if (count >= 10) setIsOpen(false);
-   }, [count]);
+      if (count >= max) setIsOpen(false);
+   }, [count, max]);
    const [mapAdding, setMapAdding] = useState(false);
 
    // Make sure the osu token is still valid
@@ -48,15 +46,19 @@ export default function AddMapButton({ count }) {
 
    return (
       <div className="position-fixed bottom-0 end-0 m-3 rounded-circle p-2">
-         {count !== -1 && <div className="text-center">{count || 0} / 10</div>}
+         {count !== -1 && (
+            <div className="text-center">
+               {count || 0} / {max}
+            </div>
+         )}
          <Button
             aria-label="Add Map"
             ref={refs.setReference}
             {...getReferenceProps()}
-            disabled={count >= 10}
-            variant={count < 10 ? "primary" : "success"}
+            disabled={count >= max}
+            variant={count < max ? "primary" : "success"}
          >
-            {count < 10 ? <PlusCircle size={32} /> : <CheckCircle size={32} />}
+            {count < max ? <PlusCircle size={32} /> : <CheckCircle size={32} />}
          </Button>
          {isOpen && (
             <div
@@ -158,31 +160,35 @@ export default function AddMapButton({ count }) {
                            console.log({ mapLink, mods });
                            const mapid = parseInt(mapLink.slice(mapLink.lastIndexOf("/") + 1));
                            if (isNaN(mapid)) return;
-                           mutate(
-                              "/api/db/player",
-                              async () => {
-                                 setMapAdding(true);
-                                 const res = await fetch("/api/db/maps", {
-                                    method: "POST",
-                                    body: JSON.stringify({ mapid, mods })
-                                 });
-                                 return res.json();
-                              },
-                              {
-                                 populateCache: (result, player) => {
-                                    setMapAdding(false);
-                                    if (!result) return player;
-                                    return {
-                                       ...player,
-                                       maps: {
-                                          ...player.maps,
-                                          current: player.maps.current.concat(result)
-                                       }
-                                    };
-                                 },
-                                 revalidate: false
-                              }
-                           );
+                           setMapAdding(true);
+                           await addFunc(mapid, mods);
+                           setMapAdding(false);
+
+                           // mutate(
+                           //    "/api/db/player",
+                           //    async () => {
+                           //       setMapAdding(true);
+                           //       const res = await fetch("/api/db/maps", {
+                           //          method: "POST",
+                           //          body: JSON.stringify({ mapid, mods })
+                           //       });
+                           //       return res.json();
+                           //    },
+                           //    {
+                           //       populateCache: (result, player) => {
+                           //          setMapAdding(false);
+                           //          if (!result) return player;
+                           //          return {
+                           //             ...player,
+                           //             maps: {
+                           //                ...player.maps,
+                           //                current: player.maps.current.concat(result)
+                           //             }
+                           //          };
+                           //       },
+                           //       revalidate: false
+                           //    }
+                           // );
                         }}
                      >
                         Add {mapAdding && <Spinner size="sm" />}

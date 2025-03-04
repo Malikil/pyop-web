@@ -166,7 +166,35 @@ export default function Mappool() {
             ]}
          />
          <PoolStats maps={player.maps.current} />
-         <AddMapButton count={player.maps.current.length} />
+         <AddMapButton
+            count={player.maps.current.length}
+            max={10}
+            addFunc={(mapid, mods) =>
+               mutate(
+                  "/api/db/player",
+                  async () => {
+                     const res = await fetch("/api/db/maps", {
+                        method: "POST",
+                        body: JSON.stringify({ mapid, mods })
+                     });
+                     return res.json();
+                  },
+                  {
+                     populateCache: (result, player) => {
+                        if (!result) return player;
+                        return {
+                           ...player,
+                           maps: {
+                              ...player.maps,
+                              current: player.maps.current.concat(result)
+                           }
+                        };
+                     },
+                     revalidate: false
+                  }
+               )
+            }
+         />
          <Modal show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Header closeButton>
                <Modal.Title>Screenshot</Modal.Title>

@@ -1,11 +1,21 @@
-import { Container } from "react-bootstrap";
+"use client";
+
+import { Container, Spinner } from "react-bootstrap";
 import PoolStats from "@/components/mappool/PoolStats";
 import MapList from "@/components/mappool/MapList";
 import AddMapButton from "@/app/mappool/AddMapButton";
+import { addAutofillMap, fetchAutofillMaps } from "./actions";
+import useSWR from "swr";
+import { useRouter } from "next/navigation";
 
 export default function Fillerpool() {
+   const { data, error, isLoading, mutate } = useSWR("autofill", fetchAutofillMaps);
+   const router = useRouter();
+
+   if (isLoading) return <Spinner className="m-4" />;
+   if (error) return router.push("/");
    return (
-      <Container className="py-2">
+      <Container>
          {/* <MapList
             maps={maps}
             mapActions={[
@@ -15,8 +25,14 @@ export default function Fillerpool() {
                }
             ]}
          /> */}
-         {/* <PoolStats maps={player.maps.current} /> */}
-         <AddMapButton count={-1} />
+         <PoolStats />
+         <AddMapButton
+            count={data.count}
+            max={data.max}
+            addFunc={async (mapid, mods) => {
+               const result = addAutofillMap(mapid, mods);
+            }}
+         />
       </Container>
    );
 }
