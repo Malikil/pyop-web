@@ -88,7 +88,7 @@ export const POST = async req => {
          cs: beatmap.cs,
          ar: beatmap.ar,
          od: beatmap.accuracy,
-         stars: beatmap.difficulty_rating,
+         stars: Math.round(beatmap.difficulty_rating * 100) / 100,
          mods,
          approval
       };
