@@ -174,7 +174,8 @@ export default function MapCard(props) {
                            key={fn.title}
                            role="button"
                            onClick={() => {
-                              if (!fn.confirm || actionsConfirmation[fn.title]) fn.action(props.beatmap);
+                              if (!fn.confirm || actionsConfirmation[fn.title])
+                                 fn.action(props.beatmap);
                               else setActionsConfirmation(ac => ({ ...ac, [fn.title]: true }));
                            }}
                         >
@@ -187,13 +188,14 @@ export default function MapCard(props) {
                   )
                   .filter(p => p)}
                <CardLink className="text-reset text-decoration-none ms-auto">
-                  {props.beatmap.approval === "approved" ? (
-                     <CheckCircle className="text-success" title="Approved" />
-                  ) : props.beatmap.approval === "rejected" ||
-                    errorState.style === styles.map_error ? (
+                  {props.beatmap.approval === "rejected" ||
+                  errorState.style === styles.map_error ? (
                      <ExclamationCircle className="text-danger" title="Rejected" />
-                  ) : (
+                  ) : props.beatmap.approval === "pending" ||
+                    errorState.style === styles.map_warning ? (
                      <QuestionCircle className="text-warning" title="Pending" />
+                  ) : (
+                     <CheckCircle className="text-success" title="Approved" />
                   )}
                </CardLink>
             </div>
