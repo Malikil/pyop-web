@@ -52,8 +52,10 @@ export const POST = async req => {
          } else if (mods & ModsEnum.HT) {
             beatmap.ar = calcModStat.ht.ar(beatmap.ar);
             beatmap.bpm = calcModStat.ht.bpm(beatmap.bpm);
-            beatmap.total_length = calcModStat.ht.length(beatmap.total_length);
-            beatmap.hit_length = calcModStat.ht.length(beatmap.hit_length);
+            // beatmap.total_length = calcModStat.ht.length(beatmap.total_length);
+            // beatmap.hit_length = calcModStat.ht.length(beatmap.hit_length);
+            beatmap.total_length = (beatmap.total_length * 4) / 3;
+            beatmap.hit_length = (beatmap.hit_length * 4) / 3;
          }
          console.log("Updated mod values");
       }
