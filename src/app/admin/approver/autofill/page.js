@@ -16,6 +16,7 @@ export default function Fillerpool() {
    if (error) return router.push("/");
    return (
       <Container>
+         <div>Nothing to see here</div>
          {/* <MapList
             maps={maps}
             mapActions={[
