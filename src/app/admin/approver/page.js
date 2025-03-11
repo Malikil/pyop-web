@@ -8,9 +8,7 @@ import { buildUrl, ModsEnum } from "osu-web.js";
 import {
    Button,
    Card,
-   CardBody,
    CardImg,
-   CardText,
    CardTitle,
    FormControl,
    FormLabel,

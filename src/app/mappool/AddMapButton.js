@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, ButtonGroup, Col, Row, Spinner, ToggleButton } from "react-bootstrap";
-import { CheckCircle, ExclamationCircle, PlusCircle } from "react-bootstrap-icons";
+import { CheckCircle, DashCircle, ExclamationCircle, PlusCircle } from "react-bootstrap-icons";
 import {
    autoUpdate,
    offset,
@@ -15,7 +15,7 @@ import { ModsEnum } from "osu-web.js";
 import { useSWRConfig } from "swr";
 import { checkTokenValid } from "./actions";
 
-export default function AddMapButton({ count }) {
+export default function AddMapButton({ count, disabled }) {
    const { mutate } = useSWRConfig();
    // Handle add button popup box
    const [isOpen, setIsOpen] = useState(false);
@@ -53,10 +53,16 @@ export default function AddMapButton({ count }) {
             aria-label="Add Map"
             ref={refs.setReference}
             {...getReferenceProps()}
-            disabled={count >= 10}
-            variant={count < 10 ? "primary" : "success"}
+            disabled={disabled || count >= 10}
+            variant={disabled ? "danger" : count < 10 ? "primary" : "success"}
          >
-            {count < 10 ? <PlusCircle size={32} /> : <CheckCircle size={32} />}
+            {disabled ? (
+               <DashCircle size={32} />
+            ) : count < 10 ? (
+               <PlusCircle size={32} />
+            ) : (
+               <CheckCircle size={32} />
+            )}
          </Button>
          {isOpen && (
             <div

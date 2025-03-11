@@ -1,4 +1,4 @@
-import { Container, Spinner } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { ModsEnum } from "osu-web.js";
 import { redirect } from "next/navigation";
 import PoolStats from "@/components/mappool/PoolStats";

@@ -11,6 +11,7 @@ import { useSWRConfig } from "swr";
 import { toast } from "react-toastify";
 import { uploadScreenshot } from "./actions";
 import AddMapButton from "./AddMapButton";
+import useSubmissionRequirements from "@/hooks/useSubmissionRequirements";
 
 const compressImage = imgData =>
    new Promise((resolve, reject) => {
@@ -60,6 +61,7 @@ export default function Mappool() {
    const { mutate } = useSWRConfig();
    const { data: player, isLoading, isError } = usePlayer();
    const router = useRouter();
+   const { data: requirements, isLoading: reqsLoading } = useSubmissionRequirements();
 
    const [maps, setMaps] = useState({
       nm: [],
@@ -144,7 +146,8 @@ export default function Mappool() {
                            })
                            //revalidate: true
                         }
-                     )
+                     ),
+                  condition: () => !reqsLoading && requirements.submissionsOpen
                },
                {
                   title: "Screenshot",
@@ -166,7 +169,10 @@ export default function Mappool() {
             ]}
          />
          <PoolStats maps={player.maps.current} />
-         <AddMapButton count={player.maps.current.length} />
+         <AddMapButton
+            count={player.maps.current.length}
+            disabled={reqsLoading || !requirements.submissionsOpen}
+         />
          <Modal show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Header closeButton>
                <Modal.Title>Screenshot</Modal.Title>

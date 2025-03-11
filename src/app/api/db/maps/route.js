@@ -9,6 +9,10 @@ import { calcModStat, Client, ModesEnum, ModsEnum, LegacyClient } from "osu-web.
 export const POST = async req => {
    const session = await auth();
    const { mapid, mods } = await req.json();
+
+   const status = await db.collection("requirements").findOne();
+   if (!status.submissionsOpen)
+      return new NextResponse({ message: "Submissions are closed" }, { status: 400 });
    console.log(`${session.user.name} adds map ${mapid} with mods ${mods}`);
 
    // Make sure the player hasn't already used this map previously
@@ -116,6 +120,9 @@ export const DELETE = async req => {
    const params = req.nextUrl.searchParams;
    const mapid = parseInt(params.get("id"));
    const mods = parseInt(params.get("mods"));
+   const status = await db.collection("requirements").findOne();
+   if (!status.submissionsOpen)
+      return new NextResponse({ message: "Submissions are closed" }, { status: 400 });
    console.log(`${session.user.name} removes map ${mapid} with mods ${mods}`);
 
    const collection = db.collection("players");
