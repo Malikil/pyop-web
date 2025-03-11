@@ -5,7 +5,7 @@ import { auth } from "@/auth";
 import { ModsEnum } from "osu-web.js";
 import { cache } from "react";
 
-const checkApprover = cache(async osuid => {
+export const checkApprover = cache(async osuid => {
    const collection = db.collection("players");
    const player = await collection.findOne({ osuid });
    return player && (player.admin || player.approver);
@@ -94,4 +94,25 @@ export async function updateApproval(beatmap, status, rejection) {
    );
    console.log(result);
    return true;
+}
+
+export async function getPlayerList() {
+   const playersCollection = db.collection("players");
+   const playerList = await playersCollection
+      .find(
+         {
+            eliminated: { $ne: true },
+            admin: { $ne: true },
+            approver: { $ne: true }
+         },
+         {
+            projection: {
+               _id: 0,
+               maps: 0
+            }
+         }
+      )
+      .toArray();
+
+   return playerList;
 }

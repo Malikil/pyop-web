@@ -2,14 +2,31 @@
 
 import MapList from "@/components/mappool/MapList";
 import { useRouter } from "next/navigation";
-import { getApprovalMaplist, updateApproval } from "./actions";
+import { getApprovalMaplist, getPlayerList, updateApproval } from "./actions";
 import useSWR from "swr";
-import { ModsEnum } from "osu-web.js";
-import { Button, FormControl, FormLabel, Modal, Spinner } from "react-bootstrap";
+import { buildUrl, ModsEnum } from "osu-web.js";
+import {
+   Button,
+   Card,
+   CardBody,
+   CardImg,
+   CardText,
+   CardTitle,
+   FormControl,
+   FormLabel,
+   Modal,
+   Spinner
+} from "react-bootstrap";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ApproverPage() {
    const { data, error, isLoading, mutate } = useSWR("approvalMaps", getApprovalMaplist);
+   const {
+      data: playerList,
+      error: pError,
+      isLoading: pLoading
+   } = useSWR("playerList", getPlayerList);
    const router = useRouter();
 
    const [rejectMessage, setRejectMessage] = useState("");
@@ -19,8 +36,8 @@ export default function ApproverPage() {
    const [showRejectModal, setShowRejectModal] = useState(false);
    const [submitting, setSubmitting] = useState(false);
 
-   if (isLoading) return <Spinner className="m-4" />;
-   if (error) return router.push("/");
+   if (isLoading || pLoading) return <Spinner className="m-4" />;
+   if (error || pError) return router.push("/");
 
    const popCache = (beatmap, status) => (result, oldData) => {
       if (!result) return oldData;
@@ -56,7 +73,7 @@ export default function ApproverPage() {
    };
 
    return (
-      <>
+      <div>
          <MapList
             maps={data}
             mapActions={[
@@ -95,6 +112,26 @@ export default function ApproverPage() {
                }
             ]}
          />
+         <hr />
+         <div>
+            <h4>View player pools</h4>
+            <div
+               className="gap-2"
+               style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit,minmax(128px,1fr))"
+               }}
+            >
+               {playerList.map(p => (
+                  <Card key={p.osuid}>
+                     <Link href={`/mappool/${p.osuid}`} className="text-decoration-none">
+                        <CardImg src={buildUrl.userAvatar(p.osuid)} alt="Avatar" />
+                        <CardTitle className="px-2 pt-2">{p.osuname}</CardTitle>
+                     </Link>
+                  </Card>
+               ))}
+            </div>
+         </div>
          <Modal show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Header closeButton>
                <Modal.Title>Screenshot</Modal.Title>
@@ -145,6 +182,6 @@ export default function ApproverPage() {
                <Button onClick={() => setShowRejectModal(false)}>Close</Button>
             </Modal.Footer>
          </Modal>
-      </>
+      </div>
    );
 }
