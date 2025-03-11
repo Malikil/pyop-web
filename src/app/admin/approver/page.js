@@ -130,6 +130,9 @@ export default function ApproverPage() {
                ))}
             </div>
          </div>
+         <Link href="/admin/approver/rejected">
+            Look at the rejected maps who cares if the link looks like ass
+         </Link>
          <Modal show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Header closeButton>
                <Modal.Title>Screenshot</Modal.Title>
