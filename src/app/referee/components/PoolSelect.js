@@ -51,11 +51,13 @@ export default function PoolSelect({ players }) {
                         }))
                      }
                   >
-                     {Object.keys(players).map(p => (
-                        <option value={p} key={p}>
-                           {p}
-                        </option>
-                     ))}
+                     {Object.keys(players)
+                        .filter(p => p !== "Tiebreaker")
+                        .map(p => (
+                           <option value={p} key={p}>
+                              {p}
+                           </option>
+                        ))}
                   </FormSelect>
                </Col>
                <Col>
@@ -71,11 +73,13 @@ export default function PoolSelect({ players }) {
                         }))
                      }
                   >
-                     {Object.keys(players).map(p => (
-                        <option value={p} key={p}>
-                           {p}
-                        </option>
-                     ))}
+                     {Object.keys(players)
+                        .filter(p => p !== "Tiebreaker")
+                        .map(p => (
+                           <option value={p} key={p}>
+                              {p}
+                           </option>
+                        ))}
                   </FormSelect>
                </Col>
             </Row>
