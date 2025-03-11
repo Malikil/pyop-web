@@ -1,3 +1,5 @@
+"use client";
+
 import { convertTime } from "@/time";
 import styles from "./mappool.module.css";
 import useSubmissionRequirements from "@/hooks/useSubmissionRequirements";

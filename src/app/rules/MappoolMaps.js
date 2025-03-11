@@ -25,7 +25,7 @@ export default function MappoolMaps() {
                <ul>
                   <li>Play-in matches will use the same star ranges as week 1</li>
                   <li>Maps don&apos;t need to be changed during play-in</li>
-                  <li>EZ is ignored for star rating calculation</li>
+                  <li>EZ mod has a 0.5 penalty to the calculated SR</li>
                </ul>
             </li>
             <li>
@@ -54,8 +54,9 @@ export default function MappoolMaps() {
                Unranked maps are allowed, as long as they&apos;re not too unreasonable
                <ul>
                   <li>
-                     This includes things like 2B, notes outside the playfield, the whole map not
-                     just being the same thing copied repeatedly, and notes being properly timed
+                     This means things like 2B, notes outside the playfield, the whole map just
+                     being the same thing copied repeatedly, improperly timed notes, etc will be
+                     rejected
                   </li>
                   <li>
                      You may not pick pending or graveyard maps mapped by a player or staff in the

@@ -44,9 +44,11 @@ import { getEnumMods } from "osu-web.js";
  * @param {string} props.mapActions.title
  * @param {function} props.mapActions.action
  * @param {function} props.mapActions.condition
+ * @param {boolean} [props.mapActions.confirm]
  */
 export default function MapCard(props) {
    const { data: reqs, isLoading } = useSubmissionRequirements();
+   const [actionsConfirmation, setActionsConfirmation] = useState({});
    // Check map status
    const [errorState, setErrorState] = useState({
       drain: false,
@@ -152,7 +154,7 @@ export default function MapCard(props) {
                   <Col>{parseFloat(props.beatmap.ar.toFixed(2))}</Col>
                </Row>
                {props.beatmap.rejection && (
-                  <Row className="mt-2">
+                  <Row className="my-2">
                      <Col>Rejection: {props.beatmap.rejection}</Col>
                   </Row>
                )}
@@ -171,21 +173,29 @@ export default function MapCard(props) {
                         <CardLink
                            key={fn.title}
                            role="button"
-                           onClick={() => fn.action(props.beatmap)}
+                           onClick={() => {
+                              if (!fn.confirm || actionsConfirmation[fn.title])
+                                 fn.action(props.beatmap);
+                              else setActionsConfirmation(ac => ({ ...ac, [fn.title]: true }));
+                           }}
                         >
+                           {actionsConfirmation[fn.title] && (
+                              <ExclamationCircle className="text-warning" />
+                           )}
                            {fn.title}
                         </CardLink>
                      ) : null
                   )
                   .filter(p => p)}
                <CardLink className="text-reset text-decoration-none ms-auto">
-                  {props.beatmap.approval === "approved" ? (
-                     <CheckCircle className="text-success" title="Approved" />
-                  ) : props.beatmap.approval === "rejected" ||
-                    errorState.style === styles.map_error ? (
+                  {props.beatmap.approval === "rejected" ||
+                  errorState.style === styles.map_error ? (
                      <ExclamationCircle className="text-danger" title="Rejected" />
-                  ) : (
+                  ) : props.beatmap.approval === "pending" ||
+                    errorState.style === styles.map_warning ? (
                      <QuestionCircle className="text-warning" title="Pending" />
+                  ) : (
+                     <CheckCircle className="text-success" title="Approved" />
                   )}
                </CardLink>
             </div>

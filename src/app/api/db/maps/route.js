@@ -9,6 +9,10 @@ import { calcModStat, Client, ModesEnum, ModsEnum, LegacyClient } from "osu-web.
 export const POST = async req => {
    const session = await auth();
    const { mapid, mods } = await req.json();
+
+   const status = await db.collection("requirements").findOne();
+   if (!status.submissionsOpen)
+      return new NextResponse({ message: "Submissions are closed" }, { status: 400 });
    console.log(`${session.user.name} adds map ${mapid} with mods ${mods}`);
 
    // Make sure the player hasn't already used this map previously
@@ -52,8 +56,10 @@ export const POST = async req => {
          } else if (mods & ModsEnum.HT) {
             beatmap.ar = calcModStat.ht.ar(beatmap.ar);
             beatmap.bpm = calcModStat.ht.bpm(beatmap.bpm);
-            beatmap.total_length = calcModStat.ht.length(beatmap.total_length);
-            beatmap.hit_length = calcModStat.ht.length(beatmap.hit_length);
+            // beatmap.total_length = calcModStat.ht.length(beatmap.total_length);
+            // beatmap.hit_length = calcModStat.ht.length(beatmap.hit_length);
+            beatmap.total_length = (beatmap.total_length * 4) / 3;
+            beatmap.hit_length = (beatmap.hit_length * 4) / 3;
          }
          console.log("Updated mod values");
       }
@@ -88,7 +94,7 @@ export const POST = async req => {
          cs: beatmap.cs,
          ar: beatmap.ar,
          od: beatmap.accuracy,
-         stars: beatmap.difficulty_rating,
+         stars: Math.round(beatmap.difficulty_rating * 100) / 100,
          mods,
          approval
       };
@@ -114,6 +120,9 @@ export const DELETE = async req => {
    const params = req.nextUrl.searchParams;
    const mapid = parseInt(params.get("id"));
    const mods = parseInt(params.get("mods"));
+   const status = await db.collection("requirements").findOne();
+   if (!status.submissionsOpen)
+      return new NextResponse({ message: "Submissions are closed" }, { status: 400 });
    console.log(`${session.user.name} removes map ${mapid} with mods ${mods}`);
 
    const collection = db.collection("players");

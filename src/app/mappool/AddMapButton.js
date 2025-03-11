@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, ButtonGroup, Col, Row, Spinner, ToggleButton } from "react-bootstrap";
-import { CheckCircle, ExclamationCircle, PlusCircle } from "react-bootstrap-icons";
+import { CheckCircle, DashCircle, ExclamationCircle, PlusCircle } from "react-bootstrap-icons";
 import {
    autoUpdate,
    offset,
@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { ModsEnum } from "osu-web.js";
 import { checkTokenValid } from "./actions";
 
-export default function AddMapButton({ count, addFunc, max }) {
+export default function AddMapButton({ count, addFunc, max, disabled }) {
    // Handle add button popup box
    const [isOpen, setIsOpen] = useState(false);
    const { refs, floatingStyles, context } = useFloating({
@@ -55,10 +55,16 @@ export default function AddMapButton({ count, addFunc, max }) {
             aria-label="Add Map"
             ref={refs.setReference}
             {...getReferenceProps()}
-            disabled={count >= max}
-            variant={count < max ? "primary" : "success"}
+            disabled={disabled || count >= max}
+            variant={disabled ? "danger" : count < max ? "primary" : "success"}
          >
-            {count < max ? <PlusCircle size={32} /> : <CheckCircle size={32} />}
+            {disabled ? (
+               <DashCircle size={32} />
+            ) : count < max ? (
+               <PlusCircle size={32} />
+            ) : (
+               <CheckCircle size={32} />
+            )}
          </Button>
          {isOpen && (
             <div
