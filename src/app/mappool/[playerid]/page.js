@@ -86,8 +86,7 @@ export default function PlayerMappool({ params }) {
                            })
                            //revalidate: true
                         }
-                     ),
-                  condition: beatmap => beatmap.approval === "rejected"
+                     )
                }
             ]}
          />
