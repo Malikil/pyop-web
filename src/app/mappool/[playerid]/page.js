@@ -8,6 +8,7 @@ import MapList from "@/components/mappool/MapList";
 import { useApproverAuth } from "@/hooks/useApproverAuth";
 import { useEffect, useState } from "react";
 import usePlayer from "@/hooks/usePlayer";
+import AddMapButton from "../AddMapButton";
 
 export default function PlayerMappool({ params }) {
    const { data: approver, error: authError, isLoading: authLoading } = useApproverAuth();
@@ -89,6 +90,34 @@ export default function PlayerMappool({ params }) {
                   condition: beatmap => beatmap.approval === "rejected"
                }
             ]}
+         />
+         <AddMapButton
+            count={player.maps.current.length}
+            max={10}
+            addFunc={(mapid, mods) =>
+               mutate(
+                  async () => {
+                     const res = await fetch("/api/db/maps", {
+                        method: "POST",
+                        body: JSON.stringify({ mapid, mods, player: player.osuid })
+                     });
+                     return res.json();
+                  },
+                  {
+                     populateCache: (result, player) => {
+                        if (!result) return player;
+                        return {
+                           ...player,
+                           maps: {
+                              ...player.maps,
+                              current: player.maps.current.concat(result)
+                           }
+                        };
+                     },
+                     revalidate: false
+                  }
+               )
+            }
          />
          <PoolStats maps={player.maps.current} />
       </Container>
