@@ -7,7 +7,7 @@ import { getEnumMods } from "osu-web.js";
 
 function SongRow({ picker, maps, song, songChanged, players, winner, winnerChanged }) {
    const selectedMap = maps.find(m => m.id == song); // == instead of parseInt
-   const mods = getEnumMods(selectedMap?.mods || 0).join(" ");
+   const mods = picker === "Tiebreaker" ? "freemod" : getEnumMods(selectedMap?.mods || 0).join(" ");
    if (selectedMap) console.log(mods);
    return (
       <tr>
@@ -17,7 +17,8 @@ function SongRow({ picker, maps, song, songChanged, players, winner, winnerChang
                <option />
                {maps.map(m => (
                   <option value={m.id} key={m.id}>
-                     {getEnumMods(m.mods).join("") || "NM"} | {m.artist} - {m.title} [{m.version}]
+                     {picker === "Tiebreaker" ? "TB" : getEnumMods(m.mods).join("") || "NM"} |{" "}
+                     {m.artist} - {m.title} [{m.version}]
                   </option>
                ))}
             </FormSelect>

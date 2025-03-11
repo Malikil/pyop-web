@@ -128,7 +128,10 @@ export async function fetchUsernames() {
    const osu = new Client(session.accessToken);
    const playersCollection = db.collection("players");
    const playerList = await playersCollection
-      .find({ eliminated: { $ne: true } }, { projection: { _id: 0, osuid: 1, osuname: 1 } })
+      .find(
+         { eliminated: { $ne: true }, osuid: { $gt: 1 } },
+         { projection: { _id: 0, osuid: 1, osuname: 1 } }
+      )
       .toArray();
    const updates = [];
    for (let i = 0; i < playerList.length; i += 50) {

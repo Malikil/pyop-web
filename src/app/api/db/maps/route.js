@@ -22,8 +22,8 @@ export const POST = async req => {
    console.log(`${session.user.name} adds map ${mapid} with mods ${mods}`);
 
    // Make sure the player hasn't already used this map previously
-   const collection = db.collection("players");
-   const player = await collection.findOne({ osuid });
+   const playersCollection = db.collection("players");
+   const player = await playersCollection.findOne({ osuid });
    const prevMaps = player.maps.previous;
    if (prevMaps.some(m => m.id === mapid))
       return new NextResponse({ message: "Map already used" }, { status: 409 });
@@ -72,7 +72,9 @@ export const POST = async req => {
       // Check for leaderboard
       // Don't bother with stars or length, that's addressed within the map list already
       let approval = "pending";
-      if (beatmap.is_scoreable) {
+      let rejectMessage = null;
+      if (osuid !== session.user.id) approval = "approved";
+      else if (beatmap.is_scoreable) {
          const osuLegacy = new LegacyClient(process.env.OSU_LEGACY_KEY);
          const scoreList = await osuLegacy.getBeatmapScores({
             b: beatmap.id,
@@ -84,6 +86,15 @@ export const POST = async req => {
          if (scoreList.length > 2 || scoreList.find(s => s.user_id === osuid))
             approval = "approved";
          console.log(`Auto approve: ${approval}`);
+      } else {
+         // Make sure the mapper isn't in the tournament
+         const existingPlayer = await playersCollection.findOne({
+            osuname: beatmap.beatmapset.creator
+         });
+         if (existingPlayer) {
+            approval = "rejected";
+            rejectMessage = "Mapper is in tournament";
+         }
       }
 
       // Prepare the database object
@@ -104,9 +115,10 @@ export const POST = async req => {
          mods,
          approval
       };
+      if (rejectMessage) dbBeatmap.rejection = rejectMessage;
       console.log(dbBeatmap);
 
-      const result = await collection.updateOne(
+      const result = await playersCollection.updateOne(
          { osuid },
          { $push: { "maps.current": dbBeatmap } }
       );
