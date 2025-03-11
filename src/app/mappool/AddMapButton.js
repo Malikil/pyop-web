@@ -14,6 +14,19 @@ import { useEffect, useState } from "react";
 import { ModsEnum } from "osu-web.js";
 import { checkTokenValid } from "./actions";
 
+/**
+ * @callback AddFunc 
+ * @param {number} mapid 
+ * @param {number} mods 
+ * @returns {Promise<void>}
+ */
+/**
+ * @param {object} params 
+ * @param {number} params.count 
+ * @param {number} params.max 
+ * @param {AddFunc} params.addFunc 
+ * @param {boolean} [params.disabled]
+ */
 export default function AddMapButton({ count, addFunc, max, disabled }) {
    // Handle add button popup box
    const [isOpen, setIsOpen] = useState(false);

@@ -1,32 +1,27 @@
 import { auth } from "@/auth";
-import db from "../connection";
-import { NextResponse } from "next/server";
-import { calcModStat, Client, ModesEnum, ModsEnum, LegacyClient } from "osu-web.js";
-import { checkApprover } from "@/server-actions/verifyRoles";
+import { checkApprover } from "./verifyRoles";
+import db from "@/app/api/db/connection";
+import { calcModStat, Client, LegacyClient, ModesEnum, ModsEnum } from "osu-web.js";
 
-async function allowSubmission(session, osuid) {
-   if (osuid && (await checkApprover(session.user.id))) return osuid;
-   const status = await db.collection("requirements").findOne();
-   if (!status.submissionsOpen) return null;
-   return session.user.id;
-}
-
-/**
- * @param {import('next/server').NextRequest} req
- */
-export const POST = async req => {
+export async function addMap(mapid, mods, osuid) {
    const session = await auth();
-   const { mapid, mods, player: playerid } = await req.json();
-   const osuid = await allowSubmission(session, playerid);
-   if (!osuid) return new NextResponse({ message: "Submissions are closed" }, { status: 400 });
+   const approver = checkApprover(session.user.id);
+   // Only approvers can add for other players
+   if (!osuid || !approver) osuid = session.user.id;
+
+   if (!approver) {
+      const status = await db.collection("requirements").findOne();
+      if (!status.submissionsOpen)
+         return { http: { message: "Submissions are closed", status: 400 } };
+   }
    console.log(`${session.user.name} adds map ${mapid} with mods ${mods}`);
 
    // Make sure the player hasn't already used this map previously
-   const collection = db.collection("players");
-   const player = await collection.findOne({ osuid });
+   const playersCollection = db.collection("players");
+   const player = await playersCollection.findOne({ osuid });
    const prevMaps = player.maps.previous;
    if (prevMaps.some(m => m.id === mapid))
-      return new NextResponse({ message: "Map already used" }, { status: 409 });
+      return { http: { message: "Map already used", status: 409 } };
 
    // Get beatmap info
    const osuapi = new Client(session.accessToken);
@@ -35,7 +30,7 @@ export const POST = async req => {
       console.log(`Beatmap: ${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title}`);
       // Reject if the gamemode is wrong
       if (beatmap.mode_int !== ModesEnum.osu)
-         return new NextResponse("Invalid game mode", { status: 400 });
+         return { http: { message: "Invalid game mode", status: 400 } };
 
       if (mods !== 0) {
          const attributes = await osuapi.beatmaps.getBeatmapAttributes(mapid, "osu", {
@@ -106,33 +101,32 @@ export const POST = async req => {
       };
       console.log(dbBeatmap);
 
-      const result = await collection.updateOne(
+      const result = await playersCollection.updateOne(
          { osuid },
          { $push: { "maps.current": dbBeatmap } }
       );
       console.log(result);
-      return NextResponse.json(dbBeatmap);
+      return dbBeatmap;
    } catch (err) {
       console.log(err.response1);
-      return new NextResponse("", { status: err.response1?.status || 500 });
+      return { http: { status: err.response1?.status || 500 } };
    }
-};
+}
 
-/**
- * @param {import('next/server').NextRequest} req
- */
-export const DELETE = async req => {
+export async function removeMap(mapid, mods, osuid) {
    const session = await auth();
-   const params = req.nextUrl.searchParams;
-   const mapid = parseInt(params.get("id"));
-   const mods = parseInt(params.get("mods"));
+   const approver = checkApprover(session.user.id);
+   if (!osuid || !approver) osuid = session.user.id;
 
-   const osuid = await allowSubmission(session, parseInt(params.get("player")));
-   if (!osuid) return new NextResponse({ message: "Submissions are closed" }, { status: 400 });
+   if (!approver) {
+      const status = await db.collection("requirements").findOne();
+      if (!status.submissionsOpen)
+         return { http: { message: "Submissions are closed", status: 400 } };
+   }
    console.log(`${session.user.name} removes map ${mapid} with mods ${mods}`);
 
-   const collection = db.collection("players");
-   const result = await collection.bulkWrite([
+   const playersCollection = db.collection("players");
+   const result = await playersCollection.bulkWrite([
       {
          updateOne: {
             filter: {
@@ -150,7 +144,7 @@ export const DELETE = async req => {
       }
    ]);
    console.log(result);
-   const player = await collection.findOne({ osuid });
-   if (!player) return new NextResponse({}, { status: 404 });
-   return NextResponse.json(player.maps.current);
-};
+   const player = await playersCollection.findOne({ osuid });
+   if (!player) return { http: { status: 404 } };
+   return player.maps.current;
+}

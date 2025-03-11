@@ -1,4 +1,3 @@
-import { CardLink, Container } from "react-bootstrap";
 import { ModsEnum } from "osu-web.js";
 import { redirect } from "next/navigation";
 import MapList from "@/components/mappool/MapList";

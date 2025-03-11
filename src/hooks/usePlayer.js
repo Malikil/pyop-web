@@ -3,13 +3,17 @@
 import useSWR from "swr";
 import fetcher from "@/fetcher";
 
-const usePlayer = () => {
-   const { data, error, isLoading } = useSWR("/api/db/player", fetcher);
+const usePlayer = osuid => {
+   const { data, error, isLoading, mutate } = useSWR(
+      `/api/db/player${osuid ? `?osuid=${osuid}` : ""}`,
+      fetcher
+   );
 
    return {
       data,
       isLoading,
-      isError: error
+      isError: error,
+      mutate
    };
 };
 export default usePlayer;

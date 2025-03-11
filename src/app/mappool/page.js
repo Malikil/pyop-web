@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import PoolStats from "@/components/mappool/PoolStats";
 import { useEffect, useState } from "react";
 import MapList from "@/components/mappool/MapList";
-import { useSWRConfig } from "swr";
 import { toast } from "react-toastify";
 import { uploadScreenshot } from "./actions";
 import AddMapButton from "./AddMapButton";
@@ -58,8 +57,7 @@ const compressImage = imgData =>
    });
 
 export default function Mappool() {
-   const { mutate } = useSWRConfig();
-   const { data: player, isLoading, isError } = usePlayer();
+   const { data: player, isLoading, isError, mutate } = usePlayer();
    const router = useRouter();
    const { data: requirements, isLoading: reqsLoading } = useSubmissionRequirements();
 
@@ -119,7 +117,6 @@ export default function Mappool() {
                   title: "Remove",
                   action: beatmap =>
                      mutate(
-                        "/api/db/player",
                         () =>
                            fetch(`/api/db/maps?id=${beatmap.id}&mods=${beatmap.mods}`, {
                               method: "DELETE"
