@@ -42,7 +42,10 @@ export async function clearScreenshots() {
    const result = await playersCollection.updateMany(
       {},
       {
-         $unset: { "maps.previous.$[].screenshot": "" }
+         $unset: {
+            "maps.previous.$[].screenshot": "",
+            "maps.locked.$[].screenshot": ""
+         }
       }
    );
    console.log(result);
@@ -58,11 +61,6 @@ export async function exportPools() {
          }
       },
       { $unwind: "$maps.current" },
-      {
-         $match: {
-            "maps.current.approval": "approved"
-         }
-      },
       {
          $project: {
             _id: false,
@@ -100,7 +98,7 @@ export async function exportPools() {
       player: `=VLOOKUP(${doc.player},PlayerList!A1:B,2,FALSE)`,
       mods: getEnumMods(doc.mods).join("") || "NM",
       drain: convertTime(doc.drain),
-      map: `=HYPERLINK("${buildUrl.beatmap(doc.id)}","${doc.map}")`
+      map: `=HYPERLINK("${buildUrl.beatmap(doc.id)}","${doc.map.replace(/"/g, '""')}")`
    }));
    await googleSheet.loadInfo();
    const exportSheet = await googleSheet.addSheet({
