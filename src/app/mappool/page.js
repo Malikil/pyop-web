@@ -171,7 +171,6 @@ export default function Mappool() {
             max={10}
             addFunc={(mapid, mods) =>
                mutate(
-                  "/api/db/player",
                   async () => {
                      const res = await fetch("/api/db/maps", {
                         method: "POST",
