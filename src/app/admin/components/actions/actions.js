@@ -89,7 +89,8 @@ export async function exportPools() {
       {
          $sort: {
             player: 1,
-            mods: 1
+            mods: 1,
+            id: 1
          }
       }
    ]);

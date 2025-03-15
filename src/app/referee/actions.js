@@ -30,7 +30,10 @@ export async function fetchPlayerList() {
                }
             }
          )
-         .map(p => [p.osuname || p.osuid, p.maps.locked.sort((a, b) => a.mods - b.mods)])
+         .map(p => [
+            p.osuname || p.osuid,
+            p.maps.locked.sort((a, b) => a.mods - b.mods || a.id - b.id)
+         ])
          .toArray()
    );
 
