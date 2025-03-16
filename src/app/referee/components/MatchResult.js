@@ -16,8 +16,10 @@ export default function MatchResult() {
                as="pre"
                className="border rounded p-2"
                role="button"
-               onClick={e => copyText(e.target.innerHTML)}
+               onClick={e => copyText(e.target.innerHTML.replace(/<br>/g, "\n"))}
             >
+               Match {context.matchId}
+               <br />
                {context.player1.score * 2 > context.bestOf && "**"}__{context.player1.name}__
                {context.player1.score * 2 > context.bestOf && "**"} {context.player1.score} |{" "}
                {context.player2.score} {context.player2.score * 2 > context.bestOf && "**"}__
