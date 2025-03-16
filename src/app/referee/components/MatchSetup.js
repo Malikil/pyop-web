@@ -50,7 +50,7 @@ export default function MatchSetup() {
                      <FormLabel>Create Match</FormLabel>
                      <FormControl
                         type="button"
-                        value={`!mp make PYOP: ${context.player1.name} vs ${context.player2.name}`}
+                        value={`!mp make PYOP: (${context.player1.name}) vs (${context.player2.name})`}
                         onClick={copyTextE}
                      />
                      <FormControl
