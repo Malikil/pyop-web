@@ -16,7 +16,7 @@ import styles from "./mappool.module.css";
  */
 export default function ModPool(props) {
    return (
-      <div>
+      <div hidden={!props.minCount && props.maps.length < 1}>
          <h2>{props.mod}</h2>
          <div className="d-flex gap-2 flex-wrap">
             {props.maps.map(m => (

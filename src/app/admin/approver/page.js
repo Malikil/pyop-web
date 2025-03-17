@@ -81,6 +81,7 @@ export default function ApproverPage() {
          </Link>
          <MapList
             maps={data}
+            counts={{ nm: 0, hd: 0, hr: 0, dt: 0 }}
             mapActions={[
                {
                   title: "Approve",
