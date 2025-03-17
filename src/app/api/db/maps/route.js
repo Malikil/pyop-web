@@ -87,10 +87,10 @@ export const POST = async req => {
          if (scoreList.length > 2 || scoreList.find(s => s.user_id === osuid))
             approval = "approved";
          console.log(`Auto approve: ${approval}`);
-      } else if (beatmap.beatmapset.submitted_date) {
-         // Unranked maps submitted after the start date are automatically rejected
-         approval = 'rejected';
-         rejectMessage = 'Unranked maps must have been submitted before registrations opened'
+         // } else if (Date.parse(beatmap.beatmapset.submitted_date) < Date.parse('')) {
+         //    // Unranked maps submitted after the start date are automatically rejected
+         //    approval = 'rejected';
+         //    rejectMessage = 'Unranked maps must have been submitted before registrations opened'
       } else {
          // Make sure the mapper isn't in the tournament
          const existingPlayer = await playersCollection.findOne({
