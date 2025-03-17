@@ -152,3 +152,55 @@ export async function fetchUsernames() {
    const result = await playersCollection.bulkWrite(updates);
    console.log(result);
 }
+
+export async function pruneAutofill() {
+   await verify();
+
+   const requirements = await db.collection("requirements").findOne();
+   const autofillCollection = db.collection("autofill");
+   return autofillCollection.deleteMany({ stars: { $lt: requirements.maps.stars.min } });
+}
+
+export async function autofillMaps() {
+   await verify();
+
+   const autofillCollection = db.collection("autofill");
+   const autofillList = autofillCollection.find({}, { projection: { _id: 0 } });
+   const maps = {
+      nm: [],
+      hd: [],
+      hr: [],
+      dt: [],
+      other: []
+   };
+   for await (const map of autofillList) {
+      switch (map.mods) {
+         case 0:
+            maps.nm.push(map);
+            break;
+         case ModsEnum.HD:
+            maps.hd.push(map);
+            break;
+         case ModsEnum.HR:
+            maps.hr.push(map);
+            break;
+         case ModsEnum.DT:
+            maps.dt.push(map);
+            break;
+         default:
+            maps.other.push(map);
+      }
+   }
+
+   const playersCollection = db.collection("players");
+   const playerList = playersCollection.find({
+      eliminated: { $ne: true },
+      admin: { $ne: true },
+      approver: { $ne: true }
+   });
+
+   for await (const player of playerList) {
+   }
+
+   return [];
+}
