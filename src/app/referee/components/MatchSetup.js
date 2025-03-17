@@ -19,10 +19,12 @@ export default function MatchSetup() {
 
    const nextPick = () => {
       if (!context.player1.roll || !context.player2.roll) return "";
+      if (context.player1.score * 2 > context.bestOf || context.player2.score * 2 > context.bestOf)
+         return "";
       const firstPick = +(context.player1.roll < context.player2.roll);
       const picked = context.maps.filter(m => m.map).length;
       const nextVar = (firstPick + picked) % 2;
-      return context[`player${nextVar + 1}`].name;
+      return ` | Next pick: ${context[`player${nextVar + 1}`].name}`;
    };
 
    return (
@@ -32,10 +34,23 @@ export default function MatchSetup() {
             <Row>
                <Col>
                   <FormGroup>
+                     <FormLabel>Match ID</FormLabel>
+                     <FormControl
+                        type="text"
+                        value={context.matchId}
+                        onChange={e => setContext(v => ({ ...v, matchId: e.target.value }))}
+                        placeholder="10"
+                     />
+                  </FormGroup>
+               </Col>
+            </Row>
+            <Row>
+               <Col>
+                  <FormGroup>
                      <FormLabel>Create Match</FormLabel>
                      <FormControl
                         type="button"
-                        value={`!mp make PYOP: ${context.player1.name} vs ${context.player2.name}`}
+                        value={`!mp make PYOP: (${context.player1.name}) vs (${context.player2.name})`}
                         onClick={copyTextE}
                      />
                      <FormControl
@@ -126,7 +141,7 @@ export default function MatchSetup() {
                         type="button"
                         value={`${context.player1.name} ${context.player1.score} - ${
                            context.player2.score
-                        } ${context.player2.name} | Next pick: ${nextPick()}`}
+                        } ${context.player2.name}${nextPick()}`}
                         onClick={copyTextE}
                      />
                   </FormGroup>

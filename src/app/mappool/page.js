@@ -171,7 +171,6 @@ export default function Mappool() {
             max={10}
             addFunc={(mapid, mods) =>
                mutate(
-                  "/api/db/player",
                   async () => {
                      const res = await fetch("/api/db/maps", {
                         method: "POST",
@@ -229,7 +228,7 @@ export default function Mappool() {
                         formData.append("beatmapId", selectedMap.id);
                         formData.append("mods", selectedMap.mods);
                         await toast.promise(
-                           mutate("/api/db/player", () => uploadScreenshot(formData), {
+                           mutate(() => uploadScreenshot(formData), {
                               optimisticData: oldData => {
                                  const updatedMaplist = oldData.maps.current;
                                  const index = updatedMaplist.findIndex(
