@@ -70,7 +70,6 @@ export const POST = async req => {
          console.log("Updated mod values");
       }
       // Check for leaderboard
-      console.log(beatmap.beatmapset.submitted_date);
       // Don't bother with stars or length, that's addressed within the map list already
       let approval = "pending";
       let rejectMessage = null;
@@ -87,10 +86,12 @@ export const POST = async req => {
          if (scoreList.length > 2 || scoreList.find(s => s.user_id === osuid))
             approval = "approved";
          console.log(`Auto approve: ${approval}`);
-      } else if (beatmap.beatmapset.submitted_date) {
+      } else if (
+         Date.parse(beatmap.beatmapset.submitted_date) > Date.parse("2025-02-11T01:28:51Z")
+      ) {
          // Unranked maps submitted after the start date are automatically rejected
-         approval = 'rejected';
-         rejectMessage = 'Unranked maps must have been submitted before registrations opened'
+         approval = "rejected";
+         rejectMessage = "Unranked maps must have been submitted before registrations opened";
       } else {
          // Make sure the mapper isn't in the tournament
          const existingPlayer = await playersCollection.findOne({
