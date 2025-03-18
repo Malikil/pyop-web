@@ -6,9 +6,11 @@ import { checkApprover } from "../actions";
 import { calcModStat, Client, ModsEnum } from "osu-web.js";
 
 export async function fetchAutofillMaps() {
+   console.log("fetchAutofillMaps");
    const session = await auth();
    if (!session) throw new Error("401");
    if (!(await checkApprover(session.user.id))) throw new Error(`403 - ${session.user.id}`);
+   console.log(`${session.user.name} fetches autofill maps`);
 
    const playersCollection = db.collection("players");
    const playerList = playersCollection.find({
@@ -16,6 +18,7 @@ export async function fetchAutofillMaps() {
       admin: { $ne: true },
       approver: { $ne: true }
    });
+   console.log("Fetched from players collection");
    let requiredCount = {
       nm: 0,
       hd: 0,
@@ -24,6 +27,7 @@ export async function fetchAutofillMaps() {
       total: 0
    };
    for await (const player of playerList) {
+      console.log(player.osuname);
       Object.keys(requiredCount).forEach(k => {
          if (k === "total") requiredCount.total += 10 - player.maps.current.length;
          else
@@ -38,6 +42,7 @@ export async function fetchAutofillMaps() {
    console.log(requiredCount);
 
    const autofillList = db.collection("autofill").find({}, { projection: { _id: 0 } });
+   console.log("Fetched from autofill collection");
    const maps = {
       nm: [],
       hd: [],

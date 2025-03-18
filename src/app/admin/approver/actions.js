@@ -12,9 +12,11 @@ export const checkApprover = cache(async osuid => {
 });
 
 export async function getApprovalMaplist() {
+   console.log("getApprovalMaplist");
    const session = await auth();
    if (!session) throw new Error("401");
    if (!(await checkApprover(session.user.id))) throw new Error(`403 - ${session.user.id}`);
+   console.log(`${session.user.name} gets approval maplist`);
 
    const collection = db.collection("players");
    const mapCursor = collection.aggregate([
@@ -37,6 +39,7 @@ export async function getApprovalMaplist() {
          }
       }
    ]);
+   console.log("DB: Aggregate complete");
    const maps = {
       nm: [],
       hd: [],
@@ -97,6 +100,7 @@ export async function updateApproval(beatmap, status, rejection) {
 }
 
 export async function getPlayerList() {
+   console.log("Get player list");
    const playersCollection = db.collection("players");
    const playerList = await playersCollection
       .find(

@@ -100,7 +100,7 @@ export default function MapCard(props) {
             style: err ? styles.map_error : warn ? styles.map_warning : null
          };
       });
-   }, [props.beatmap, reqs]);
+   }, [props.beatmap, reqs, isLoading]);
 
    return (
       <Card className={`${styles.mapcard} ${errorState.style}`}>
