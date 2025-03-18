@@ -169,7 +169,8 @@ export default function ApproverPage() {
                   action={async () => {
                      setSubmitting(true);
                      await mutate(() => updateApproval(selectedMap, "rejected", rejectMessage), {
-                        populateCache: popCache(selectedMap, "rejected")
+                        populateCache: popCache(selectedMap, "rejected"),
+                        revalidate: false
                      });
                      setSubmitting(false);
                      setShowRejectModal(false);

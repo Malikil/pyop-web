@@ -20,17 +20,17 @@ export default function Fillerpool() {
          <MapList
             maps={data}
             counts={data.required}
-            mapActions={[
-               {
-                  title: "Remove",
-                  action: beatmap => {
-                     mutate(() => removeAutofillMap(beatmap.id, beatmap.mods), {
-                        optimisticData: current => {},
-                        populateCache: (result, current) => {}
-                     });
-                  }
-               }
-            ]}
+            // mapActions={[
+            //    {
+            //       title: "Remove",
+            //       action: beatmap => {
+            //          mutate(() => removeAutofillMap(beatmap.id, beatmap.mods), {
+            //             optimisticData: current => {},
+            //             populateCache: (result, current) => {}
+            //          });
+            //       }
+            //    }
+            // ]}
          />
          <PoolStats />
          <AddMapButton
@@ -58,12 +58,7 @@ export default function Fillerpool() {
                      })(result.mods);
                      return {
                         ...current,
-                        [pool]: current[pool].concat([result]),
-                        required: {
-                           ...current.required,
-                           [pool]: current.required[pool] - 1,
-                           total: current.required.total - 1
-                        }
+                        [pool]: current[pool].concat([result])
                      };
                   }
                   // revalidate: false
