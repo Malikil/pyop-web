@@ -21,11 +21,13 @@ import { ArrowRight } from "react-bootstrap-icons";
 
 export default function ApproverPage() {
    const { data, error, isLoading, mutate } = useSWR("approvalMaps", getApprovalMaplist);
+   console.log(data, error, isLoading, mutate);
    const {
       data: playerList,
       error: pError,
       isLoading: pLoading
    } = useSWR("playerList", getPlayerList);
+   console.log(playerList, pError, pLoading);
    const router = useRouter();
 
    const [rejectMessage, setRejectMessage] = useState("");

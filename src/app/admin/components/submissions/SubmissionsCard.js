@@ -38,7 +38,7 @@ export default function SubmissionsCard() {
       setMinStars(data.maps.stars.min);
       setMaxStars(data.maps.stars.max);
       setSubmissionsOpen(data.submissionsOpen);
-   }, [data]);
+   }, [data, isLoading]);
    return (
       <Card>
          <CardBody className="d-flex flex-column">

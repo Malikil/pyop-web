@@ -11,7 +11,7 @@ export default function ConfirmButton({ delay, onClick, variant, altVariant, chi
    useEffect(() => {
       const resetId = setTimeout(() => setConfirmClick(false), delay || 2000);
       return () => clearTimeout(resetId);
-   }, [confirmClick]);
+   }, [confirmClick, delay]);
 
    return (
       <Button
