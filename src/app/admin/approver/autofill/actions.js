@@ -159,5 +159,15 @@ export async function addAutofillMap(mapid, mods) {
 }
 
 export async function removeAutofillMap(mapid, mods) {
-   console.log(mapid, mods);
+   const session = await auth();
+   if (!session) throw new Error("401");
+   if (!(await checkApprover(session.user.id))) throw new Error(`403 - ${session.user.id}`);
+   console.log(`Remove map ${mapid} from autofill pool ${mods}`);
+
+   const result = await db.collection("autofill").deleteOne({
+      id: mapid,
+      mods
+   });
+   console.log(result);
+   return true;
 }

@@ -68,12 +68,20 @@ export default function AddMapButton({ count, addFunc, max, disabled }) {
             aria-label="Add Map"
             ref={refs.setReference}
             {...getReferenceProps()}
-            disabled={disabled || count >= max}
-            variant={disabled ? "danger" : count < max ? "primary" : "success"}
+            disabled={disabled === "never" ? false : disabled || count >= max}
+            variant={
+               disabled === "never"
+                  ? "primary"
+                  : disabled
+                  ? "danger"
+                  : count < max
+                  ? "primary"
+                  : "success"
+            }
          >
-            {disabled ? (
+            {disabled !== "never" && disabled ? (
                <DashCircle size={32} />
-            ) : count < max ? (
+            ) : disabled === "never" || count < max ? (
                <PlusCircle size={32} />
             ) : (
                <CheckCircle size={32} />
@@ -180,34 +188,11 @@ export default function AddMapButton({ count, addFunc, max, disabled }) {
                            const mapid = parseInt(mapLink.slice(mapLink.lastIndexOf("/") + 1));
                            if (isNaN(mapid)) return;
                            setMapAdding(true);
-                           await addFunc(mapid, mods);
+                           if (await addFunc(mapid, mods)) {
+                              setMapLink("");
+                              setMods(0);
+                           }
                            setMapAdding(false);
-
-                           // mutate(
-                           //    "/api/db/player",
-                           //    async () => {
-                           //       setMapAdding(true);
-                           //       const res = await fetch("/api/db/maps", {
-                           //          method: "POST",
-                           //          body: JSON.stringify({ mapid, mods })
-                           //       });
-                           //       return res.json();
-                           //    },
-                           //    {
-                           //       populateCache: (result, player) => {
-                           //          setMapAdding(false);
-                           //          if (!result) return player;
-                           //          return {
-                           //             ...player,
-                           //             maps: {
-                           //                ...player.maps,
-                           //                current: player.maps.current.concat(result)
-                           //             }
-                           //          };
-                           //       },
-                           //       revalidate: false
-                           //    }
-                           // );
                         }}
                      >
                         Add {mapAdding && <Spinner size="sm" />}

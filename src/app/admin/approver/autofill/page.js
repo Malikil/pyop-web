@@ -20,17 +20,56 @@ export default function Fillerpool() {
          <MapList
             maps={data}
             counts={data.required}
-            // mapActions={[
-            //    {
-            //       title: "Remove",
-            //       action: beatmap => {
-            //          mutate(() => removeAutofillMap(beatmap.id, beatmap.mods), {
-            //             optimisticData: current => {},
-            //             populateCache: (result, current) => {}
-            //          });
-            //       }
-            //    }
-            // ]}
+            mapActions={[
+               {
+                  title: "Remove",
+                  action: beatmap => {
+                     mutate(() => removeAutofillMap(beatmap.id, beatmap.mods), {
+                        optimisticData: current => {
+                           const pool = (m => {
+                              switch (m) {
+                                 case 0:
+                                    return "nm";
+                                 case ModsEnum.HD:
+                                    return "hd";
+                                 case ModsEnum.HR:
+                                    return "hr";
+                                 case ModsEnum.DT:
+                                    return "dt";
+                                 default:
+                                    return "other";
+                              }
+                           })(beatmap.mods);
+                           return {
+                              ...current,
+                              [pool]: current[pool].filter(m => m.id !== beatmap.id)
+                           };
+                        },
+                        populateCache: (result, current) => {
+                           if (!result) return current;
+                           const pool = (m => {
+                              switch (m) {
+                                 case 0:
+                                    return "nm";
+                                 case ModsEnum.HD:
+                                    return "hd";
+                                 case ModsEnum.HR:
+                                    return "hr";
+                                 case ModsEnum.DT:
+                                    return "dt";
+                                 default:
+                                    return "other";
+                              }
+                           })(beatmap.mods);
+                           return {
+                              ...current,
+                              [pool]: current[pool].filter(m => m.id !== beatmap.id)
+                           };
+                        }
+                     });
+                  }
+               }
+            ]}
          />
          <PoolStats />
          <AddMapButton
@@ -38,6 +77,7 @@ export default function Fillerpool() {
                data.nm.length + data.hd.length + data.hr.length + data.dt.length + data.other.length
             }
             max={data.required.total}
+            disabled="never"
             addFunc={(mapid, mods) =>
                mutate(() => addAutofillMap(mapid, mods), {
                   populateCache: (result, current) => {
