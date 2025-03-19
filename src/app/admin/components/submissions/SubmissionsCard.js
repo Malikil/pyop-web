@@ -14,7 +14,7 @@ async function handleSubmit(formData) {
    };
    console.log(data);
 
-   toast.promise(
+   await toast.promise(
       saveSubmissionSettings(data).then(res => {
          if (res) return;
          throw new Error();
