@@ -14,6 +14,7 @@ export async function fetchAutofillMaps() {
 
    const playersCollection = db.collection("players");
    const playerList = playersCollection.find({
+      osuid: { $gt: 1 },
       eliminated: { $ne: true },
       admin: { $ne: true },
       approver: { $ne: true }
