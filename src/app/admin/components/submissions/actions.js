@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
 import { verify } from "../../functions";
 import db from "@/app/api/db/connection";
 
@@ -23,6 +22,5 @@ export async function saveSubmissionSettings(data) {
          }
       }
    );
-   revalidateTag("/api/db/maps/requirements");
    return !!result.modifiedCount;
 }

@@ -1,7 +1,12 @@
+"use server";
+
 import { auth } from "@/auth";
 import { checkApprover } from "./verifyRoles";
 import db from "@/app/api/db/connection";
 import { calcModStat, Client, LegacyClient, ModesEnum, ModsEnum } from "osu-web.js";
+
+export const getRequirements = async () =>
+   db.collection("requirements").findOne({}, { projection: { _id: 0 } });
 
 export async function addMap(mapid, mods, osuid) {
    const session = await auth();

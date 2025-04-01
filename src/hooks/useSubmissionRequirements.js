@@ -1,10 +1,10 @@
 "use client";
 
 import useSWR from "swr";
-import fetcher from "@/fetcher";
+import { getRequirements } from "@/server-actions/mappools";
 
 const useSubmissionRequirements = () => {
-   const { data, error, isLoading } = useSWR("/api/db/maps/requirements", fetcher);
+   const { data, error, isLoading } = useSWR("requirements", getRequirements);
 
    return {
       data,
