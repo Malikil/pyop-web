@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import MatchContext from "./MatchContext";
 import MatchResult from "./components/MatchResult";
 
-const BESTOF = 9;
+const BESTOF = 11;
 
 export default function Referee() {
    const { data, error, isLoading } = useSWR("refereeMaplist", fetchPlayerList);
